@@ -24,8 +24,7 @@ class TaskFormStateTest {
         val state = TaskFormState()
 
         // When
-        state.title = ""
-        state.isTitleDirty = true
+        state.onTitleChanged("")
 
         // Then
         assertThat(state.isTitleError).isTrue()
@@ -38,9 +37,8 @@ class TaskFormStateTest {
         val state = TaskFormState()
 
         // When
-        state.title = "정상 제목"
-        state.tagValue = "버그, 긴급"
-        state.isTitleDirty = true
+        state.onTitleChanged("정상 제목")
+        state.onTagChanged("버그, 긴급")
 
         // Then
         assertThat(state.isTitleError).isFalse()
@@ -55,8 +53,8 @@ class TaskFormStateTest {
         val state = TaskFormState()
 
         // When
-        state.title = "제목"
-        state.tagValue = "1, 2, 3, 4, 5, 6"
+        state.onTitleChanged("제목")
+        state.onTagChanged("1, 2, 3, 4, 5, 6")
 
         // Then
         assertThat(state.isTagCountError).isTrue()
@@ -70,8 +68,8 @@ class TaskFormStateTest {
         val state = TaskFormState()
 
         // When
-        state.title = "제목"
-        state.tagValue = "정상, 여섯글자태그"
+        state.onTitleChanged("제목")
+        state.onTagChanged("정상, 여섯글자태그")
 
         // Then
         assertThat(state.isTagCountError).isFalse()

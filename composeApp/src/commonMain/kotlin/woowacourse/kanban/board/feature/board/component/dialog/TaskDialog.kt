@@ -38,15 +38,14 @@ fun TaskDialog(
             titleValue = formState.title,
             isTitleError = formState.isTitleError,
             onTitleChanged = {
-                formState.title = it
-                formState.isTitleDirty = true
+                formState.onTitleChanged(it)
             },
             descriptionValue = formState.description,
-            onDescriptionChanged = { formState.description = it },
+            onDescriptionChanged = { formState.onDescriptionChanged(it) },
             tagValue = formState.tagValue,
             isTagCountError = formState.isTagCountError,
             isTagFormatError = formState.isTagFormatError,
-            onTagChanged = { formState.tagValue = it },
+            onTagChanged = { formState.onTagChanged(it) },
             statuses = statuses,
             selectedStatusIndex = selectedStatusIndex,
             onStatusChanged = { selectedStatusIndex = it },

@@ -6,6 +6,7 @@ import woowacourse.kanban.board.domain.KanbanBoard
 import woowacourse.kanban.board.domain.TaskStatus
 import woowacourse.kanban.board.feature.board.KanbanBoardState
 import woowacourse.kanban.board.feature.board.component.dialog.model.TaskFormResult
+import woowacourse.kanban.board.feature.board.model.SnackbarMessageType
 
 class KanbanBoardStateTest {
 
@@ -55,7 +56,7 @@ class KanbanBoardStateTest {
     }
 
     @Test
-    fun `addTask 성공 시 snackbarMessage가 세팅된다`() {
+    fun `addTask 성공 시 snackbarEvent가 세팅된다`() {
         // Given
         val state = KanbanBoardState()
         val result = TaskFormResult(
@@ -70,11 +71,12 @@ class KanbanBoardStateTest {
         state.addTask(result)
 
         // Then
-        assertThat(state.snackbarMessage).isNotNull()
+        assertThat(state.snackbarEvent).isNotNull()
+        assertThat(state.snackbarEvent?.type).isEqualTo(SnackbarMessageType.TaskAdded)
     }
 
     @Test
-    fun `clearSnackbar 호출 후 snackbarMessage가 null로 초기화된다`() {
+    fun `clearSnackbar 호출 후 snackbarEvent가 null로 초기화된다`() {
         // Given
         val state = KanbanBoardState()
         state.addTask(
@@ -86,13 +88,14 @@ class KanbanBoardStateTest {
                 assignee = "다이노",
             ),
         )
-        assertThat(state.snackbarMessage).isNotNull()
+        val event = state.snackbarEvent
+        assertThat(event).isNotNull()
 
         // When
-        state.clearSnackbar()
+        state.clearSnackbar(event!!.id)
 
         // Then
-        assertThat(state.snackbarMessage).isNull()
+        assertThat(state.snackbarEvent).isNull()
     }
 
     @Test

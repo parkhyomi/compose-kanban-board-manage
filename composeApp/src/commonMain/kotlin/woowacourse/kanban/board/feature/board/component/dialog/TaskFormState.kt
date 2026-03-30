@@ -10,9 +10,16 @@ import woowacourse.kanban.board.domain.Tag
 
 class TaskFormState {
     var title by mutableStateOf("")
+        private set
+
     var isTitleDirty by mutableStateOf(false)
+        private set
+
     var description by mutableStateOf("")
+        private set
+
     var tagValue by mutableStateOf("")
+        private set
 
     val isTitleError: Boolean
         get() = isTitleDirty && !KanbanTask.isTitleValid(title)
@@ -40,6 +47,19 @@ class TaskFormState {
 
     val isCreateButtonEnabled: Boolean
         get() = KanbanTask.isTitleValid(title) && !isTagCountError && !isTagFormatError
+
+    fun onTitleChanged(value: String) {
+        title = value
+        isTitleDirty = true
+    }
+
+    fun onDescriptionChanged(value: String) {
+        description = value
+    }
+
+    fun onTagChanged(value: String) {
+        tagValue = value
+    }
 }
 
 @Composable
