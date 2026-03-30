@@ -15,11 +15,13 @@ fun KanbanBoardScreen(
     modifier: Modifier = Modifier,
     boardState: KanbanBoardState = rememberKanbanBoardState(),
 ) {
-    LaunchedEffect(boardState.snackbarMessage) {
-        boardState.snackbarMessage?.let { message ->
-            onShowSnackbar(message)
-            boardState.clearSnackbar()
-        }
+    LaunchedEffect(boardState.snackbarEvent?.id) {
+
+        val event = boardState.snackbarEvent ?: return@LaunchedEffect
+
+        onShowSnackbar(event.message)
+        boardState.clearSnackbar(event.id)
+
     }
 
     Row(modifier = modifier.fillMaxSize()) {
