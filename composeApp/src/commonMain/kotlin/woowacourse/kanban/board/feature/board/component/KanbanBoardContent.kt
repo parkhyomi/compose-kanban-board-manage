@@ -36,54 +36,52 @@ fun KanbanBoardContent(
     var currentDragPosition by remember { mutableStateOf<Offset?>(null) }
     val columnBounds = remember { mutableStateMapOf<TaskStatus, Rect>() }
 
-    with(kanbanBoard) {
-        Column(
-            modifier = modifier
-                .background(Color.White)
-                .fillMaxSize(),
-        ) {
-            KanbanBoardHeader(
-                board = kanbanBoard,
-                onClick = onTaskCreateClick,
-                modifier = Modifier,
-            )
+    Column(
+        modifier = modifier
+            .background(Color.White)
+            .fillMaxSize(),
+    ) {
+        KanbanBoardHeader(
+            board = kanbanBoard,
+            onClick = onTaskCreateClick,
+            modifier = Modifier,
+        )
 
-            Row(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(24.dp)
-                    .horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                TaskStatus.entries.forEach { status ->
-                    KanbanColumn(
-                        status = status,
-                        tasks = getTasksByStatus(status),
-                        getIsDropTarget = {
-                            currentDragPosition?.let { columnBounds[status]?.contains(it) } ?: false
-                        },
-                        onBoundsChanged = { rect -> columnBounds[status] = rect },
-                        onTaskDragStart = { task -> draggedTask = task },
-                        onTaskDragChange = { pos -> currentDragPosition = pos },
-                        onTaskDragEnd = {
-                            val dropPosition = currentDragPosition
-                            val targetStatus = dropPosition?.let { pos ->
-                                columnBounds.entries.firstOrNull { (_, rect) -> rect.contains(pos) }?.key
+        Row(
+            modifier = Modifier
+                .weight(1f)
+                .padding(24.dp)
+                .horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            TaskStatus.entries.forEach { status ->
+                KanbanColumn(
+                    status = status,
+                    tasks = kanbanBoard.getTasksByStatus(status),
+                    getIsDropTarget = {
+                        currentDragPosition?.let { columnBounds[status]?.contains(it) } ?: false
+                    },
+                    onBoundsChanged = { rect -> columnBounds[status] = rect },
+                    onTaskDragStart = { task -> draggedTask = task },
+                    onTaskDragChange = { pos -> currentDragPosition = pos },
+                    onTaskDragEnd = {
+                        val dropPosition = currentDragPosition
+                        val targetStatus = dropPosition?.let { pos ->
+                            columnBounds.entries.firstOrNull { (_, rect) -> rect.contains(pos) }?.key
+                        }
+                        draggedTask?.let { task ->
+                            if (targetStatus != null && task.status != targetStatus) {
+                                onMoveTask(task, targetStatus)
                             }
-                            draggedTask?.let { task ->
-                                if (targetStatus != null && task.status != targetStatus) {
-                                    onMoveTask(task, targetStatus)
-                                }
-                            }
-                            draggedTask = null
-                            currentDragPosition = null
-                        },
-                        onTaskDragCancel = {
-                            draggedTask = null
-                            currentDragPosition = null
-                        },
-                    )
-                }
+                        }
+                        draggedTask = null
+                        currentDragPosition = null
+                    },
+                    onTaskDragCancel = {
+                        draggedTask = null
+                        currentDragPosition = null
+                    },
+                )
             }
         }
     }
