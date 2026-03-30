@@ -1,7 +1,7 @@
 package woowacourse.kanban.board.domain
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import kotlin.test.Test
 
 class KanbanBoardTest {
 
