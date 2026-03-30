@@ -8,9 +8,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import woowacourse.kanban.board.domain.KanbanBoard
 import woowacourse.kanban.board.domain.KanbanTask
-import woowacourse.kanban.board.domain.SnackbarEvent
 import woowacourse.kanban.board.domain.TaskStatus
 import woowacourse.kanban.board.feature.board.component.dialog.model.TaskFormResult
+import woowacourse.kanban.board.feature.board.model.SnackbarEvent
+import woowacourse.kanban.board.feature.board.model.SnackbarMessageType
 
 @Stable
 class KanbanBoardState(initialBoard: KanbanBoard = KanbanBoard()) {
@@ -39,16 +40,16 @@ class KanbanBoardState(initialBoard: KanbanBoard = KanbanBoard()) {
         }
     }
 
-    private fun emitSnackbar(message: String) {
+    private fun emitSnackbar(type: SnackbarMessageType) {
         snackbarEvent = SnackbarEvent(
             id = ++nextSnackbarId,
-            message = message,
+            type = type,
         )
     }
 
     fun moveTask(task: KanbanTask, targetStatus: TaskStatus) {
         kanbanBoard = kanbanBoard.moveTask(task.id, targetStatus)
-        emitSnackbar("태스크가 이동되었습니다.")
+        emitSnackbar(SnackbarMessageType.TaskMoved)
     }
 
     fun addTask(result: TaskFormResult) {
@@ -63,9 +64,9 @@ class KanbanBoardState(initialBoard: KanbanBoard = KanbanBoard()) {
             kanbanBoard = kanbanBoard.copy(tasks = kanbanBoard.tasks + newTask)
             hideTaskDialog()
         }.onSuccess {
-            emitSnackbar("새로운 태스크가 추가되었습니다.")
+            emitSnackbar(SnackbarMessageType.TaskAdded)
         }.onFailure { e ->
-            emitSnackbar("태스크 추가에 실패했습니다.")
+            emitSnackbar(SnackbarMessageType.TaskAddFailed)
         }
     }
 }

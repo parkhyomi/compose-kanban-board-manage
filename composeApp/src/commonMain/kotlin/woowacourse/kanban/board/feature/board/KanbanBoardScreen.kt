@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import woowacourse.kanban.board.feature.board.component.KanbanBoardContent
 import woowacourse.kanban.board.feature.board.component.KanbanBoardSidebar
 import woowacourse.kanban.board.feature.board.component.dialog.TaskDialog
+import woowacourse.kanban.board.feature.board.mapper.toSnackbarMessage
 
 @Composable
 fun KanbanBoardScreen(
@@ -18,8 +19,9 @@ fun KanbanBoardScreen(
     LaunchedEffect(boardState.snackbarEvent?.id) {
 
         val event = boardState.snackbarEvent ?: return@LaunchedEffect
+        val message = event.type.toSnackbarMessage()
 
-        onShowSnackbar(event.message)
+        onShowSnackbar(message)
         boardState.clearSnackbar(event.id)
 
     }
