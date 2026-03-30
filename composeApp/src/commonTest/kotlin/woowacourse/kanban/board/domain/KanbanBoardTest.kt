@@ -6,7 +6,7 @@ import kotlin.test.Test
 class KanbanBoardTest {
 
     @Test
-    fun `전체_태스크_중_완료된_태스크의_비율을_계산한다`() {
+    fun `completionRate는_전체_태스크_2개중_DONE이_1개면_0_5를_반환한다`() {
         // given
         val tasks = listOf(
             createTask(status = TaskStatus.TODO),
