@@ -1,40 +1,48 @@
-This is a Kotlin Multiplatform project targeting Android, Desktop (JVM).
+# 🚀 1단계 - 칸반 보드 관리(프로젝트)
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+우아한테크코스 안드로이드 8기 레벨 1 미션, 칸반 보드 관리 미션을 수행하는 프로젝트입니다.
 
-### Build and Run Android Application
+## 1단계 기능 및 작업 명세
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
+### 프로젝트 구조 및 패키징 리팩터링
+- 이전 미션의 코드베이스를 기반으로 확장성을 고려하여 `core`, `domain`, `feature` 레이어로 패키지를 분리하여 재구성합니다.
+- 각 레이어의 책임을 명확히 하여 상위 레이어의 변화가 도메인 로직에 영향을 주지 않도록 격리합니다.
 
-### Build and Run Desktop (JVM) Application
+### 도메인 모델의 고유 식별자 도입
+- 데스크탑 환경에서의 확장성과 데이터 무결성을 고려하여 `KanbanTask`에 `UUID` 기반의 고유 식별자를 추가합니다.
+- 드래그 앤 드롭 및 상태 변경 시 각 태스크를 유일하게 식별하여 데이터 정합성을 보장합니다.
 
-To build and run the development version of the desktop app, use the run configuration from the run widget
-in your IDE’s toolbar or run it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:run
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:run
-  ```
+### 상태 홀더의 스낵바 상태 책임 통합
+- 상태 홀더가 스낵바 메시지 상태를 직접 소유하도록 설계합니다.
+- UI 계층은 이 상태를 관찰하여 스낵바를 표시할 뿐, 표시 여부와 메시지 내용을 직접 결정하지 않습니다.
+- 태스크 추가 성공/실패 등 모든 사용자 액션의 결과가 상태 홀더 단일 지점에서 스낵바 상태로 전환됩니다.
 
----
+### 도메인 태스크 이동 메서드 추가
+- `KanbanBoard.addTask()`를 제거하고 상태 홀더가 `copy`를 직접 호출하도록 변경합니다.
+- `KanbanBoard`에 `moveTask` 메서드를 추가합니다.
+- ID 기반 태스크 탐색과 상태 전이 로직은 도메인 객체가 책임지도록 합니다.
+- TDD로 진행합니다.
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+### 칸반 보드 드래그 앤 드롭 구현
+- 태스크 카드를 드래그해서 다른 상태 컬럼으로 이동시키는 드래그 앤 드롭 기능을 구현합니다.
+- 드래그 중인 카드의 위치 좌표를 감지하고 해당 좌표가 어느 컬럼 영역에 위치하는지 판단해 상태 전이를 동작시킵니다.
+- 이동 성공 시 상태 홀더가 스낵바 메시지를 세팅하고 UI가 이를 감지하여 스낵바를 표시합니다.
+- 드래그 중 불필요한 리컴포지션이 발생하지 않도록 컬럼 하이라이트 상태를 람다로 전달합니다.
+
+### 사이드바 레이아웃 및 메인 화면 통합
+- 디자인 시안에 따라 앱 좌측에 프로젝트 목록을 위한 사이드바를 배치합니다.
+- 사이드바가 고정된 상태에서도 보드 영역이 유연하게 반응할 수 있는 구조를 설계합니다.
+
+## 테스트 명세
+
+### 단위 테스트 (TDD)
+- **도메인 비즈니스 로직 검증**
+  - 태스크 상태 전이 시의 리스트 정합성 등 규칙을 테스트 코드로 먼저 정의하고 구현합니다.
+  - `moveTask` 호출 시 올바른 태스크의 상태만 변경되는지 존재하지 않는 ID에 대한 동작을 검증합니다.
+- **상태 홀더 검증**
+  - 태스크 추가·이동 성공 시 `snackbarMessage`가 올바르게 세팅되는지 검증합니다.
+  - 스낵바 소비 후 `snackbarMessage`가 초기화되는지 검증합니다.
+
+### Compose UI 테스트
+- **컴포넌트 배치 검증**
+  - 사이드바와 보드 영역이 시안의 의도대로 올바르게 렌더링되는지 확인합니다.
