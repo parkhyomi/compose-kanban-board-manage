@@ -24,9 +24,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import woowacourse.kanban.board.domain.TaskStatus
+import woowacourse.kanban.board.feature.board.mapper.toDisplayText
 
 @Composable
 fun TaskDialogContent(
+    topAppBarTitle: String,
     titleValue: String,
     isTitleError: Boolean,
     onTitleChanged: (String) -> Unit,
@@ -63,7 +65,7 @@ fun TaskDialogContent(
         verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
         TaskDialogTopAppBar(
-            title = "새 태스크 생성",
+            title = topAppBarTitle,
             onClick = onDismissClick,
             modifier = Modifier.padding(bottom = 4.dp),
         )
@@ -130,18 +132,15 @@ fun TaskDialogContent(
             isRequired = true,
         ) {
             Row(
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 statuses.forEachIndexed { index, status ->
-                    val statusText = when (status) {
-                        TaskStatus.TODO -> "To Do"
-                        TaskStatus.IN_PROGRESS -> "In Progress"
-                        TaskStatus.DONE -> "Done"
-                    }
                     StatusOptionCard(
-                        text = statusText,
+                        text = status.toDisplayText,
                         isSelected = selectedStatusIndex == index,
                         onClick = { onStatusChanged(index) },
+                        modifier = Modifier.weight(1f),
                     )
                 }
             }
@@ -212,10 +211,11 @@ private fun TaskLabelLayout(
     }
 }
 
-@Preview
+@Preview(heightDp = 920)
 @Composable
 private fun TaskDialogContentPreview() {
     TaskDialogContent(
+        topAppBarTitle = "기존 태스크 수정",
         titleValue = "",
         isTitleError = false,
         onTitleChanged = {},

@@ -19,12 +19,13 @@ fun StatusOptionCard(text: String, isSelected: Boolean, onClick: () -> Unit, mod
     TaskOptionCard(
         isSelected = isSelected,
         onClick = onClick,
+        modifier = modifier
     ) {
         Text(
             text = text,
             color = if (isSelected) Color.Blue else Black,
             fontSize = 16.sp,
-            modifier = modifier.align(Alignment.Center),
+            modifier = Modifier.align(Alignment.Center),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )

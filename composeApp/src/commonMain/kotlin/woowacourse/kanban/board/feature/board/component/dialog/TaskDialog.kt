@@ -14,6 +14,7 @@ import woowacourse.kanban.board.feature.board.component.dialog.model.TaskFormRes
 
 @Composable
 fun TaskDialog(
+    topAppBarTitle: () -> String,
     onCreateClick: (result: TaskFormResult) -> Unit,
     onDismissClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -35,6 +36,7 @@ fun TaskDialog(
     ) {
         TaskDialogContent(
             modifier = modifier,
+            topAppBarTitle = topAppBarTitle(),
             titleValue = formState.title,
             isTitleError = formState.isTitleError,
             onTitleChanged = {

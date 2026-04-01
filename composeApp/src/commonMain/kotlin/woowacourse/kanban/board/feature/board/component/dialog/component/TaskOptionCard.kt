@@ -46,7 +46,6 @@ fun TaskOptionCard(
                 color = borderColor,
                 shape = cardShape,
             )
-            .width(200.dp)
             .padding(paddingValues = paddingValues),
     ) {
         content()

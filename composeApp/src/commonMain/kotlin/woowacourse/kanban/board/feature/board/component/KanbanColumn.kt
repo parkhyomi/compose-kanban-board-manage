@@ -35,12 +35,15 @@ import androidx.compose.ui.unit.sp
 import woowacourse.kanban.board.core.designsystem.theme.KanbanDeepGreen
 import woowacourse.kanban.board.core.designsystem.theme.KanbanLightBlue
 import woowacourse.kanban.board.core.designsystem.theme.KanbanLightGreen
+import woowacourse.kanban.board.core.designsystem.theme.KanbanLightPurple
 import woowacourse.kanban.board.core.designsystem.theme.KanbanLightYellow
 import woowacourse.kanban.board.core.designsystem.theme.KanbanOrange
+import woowacourse.kanban.board.core.designsystem.theme.KanbanPurple
 import woowacourse.kanban.board.domain.KanbanTask
 import woowacourse.kanban.board.domain.Tag
 import woowacourse.kanban.board.domain.TaskStatus
 import woowacourse.kanban.board.feature.board.component.card.KanbanCard
+import woowacourse.kanban.board.feature.board.mapper.toDisplayText
 
 @Composable
 fun KanbanColumn(
@@ -54,7 +57,7 @@ fun KanbanColumn(
     onTaskDragEnd: () -> Unit = {},
     onTaskDragCancel: () -> Unit = {},
 ) {
-    val title = status.displayName
+
     val (headerBackgroundColor, contentBackgroundColor) = status.colors
     val isDropTarget by remember { derivedStateOf { getIsDropTarget() } }
     val lastBounds = remember { mutableStateOf<Rect?>(null) }
@@ -88,7 +91,7 @@ fun KanbanColumn(
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
-                text = title,
+                text = status.toDisplayText,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = Color.White,
@@ -128,17 +131,11 @@ fun KanbanColumn(
     }
 }
 
-private val TaskStatus.displayName: String
-    get() = when (this) {
-        TaskStatus.TODO -> "To Do"
-        TaskStatus.IN_PROGRESS -> "In Progress"
-        TaskStatus.DONE -> "Done"
-    }
-
 private val TaskStatus.colors: Pair<Color, Color>
     get() = when (this) {
         TaskStatus.TODO -> Color.Blue to Color.KanbanLightBlue
         TaskStatus.IN_PROGRESS -> Color.KanbanOrange to Color.KanbanLightYellow
+        TaskStatus.REVIEW -> Color.KanbanPurple to Color.KanbanLightPurple
         TaskStatus.DONE -> Color.KanbanDeepGreen to Color.KanbanLightGreen
     }
 

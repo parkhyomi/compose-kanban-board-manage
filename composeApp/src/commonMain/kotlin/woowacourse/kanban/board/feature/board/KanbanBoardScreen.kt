@@ -38,6 +38,7 @@ fun KanbanBoardScreen(
 
     if (boardState.isTaskDialogVisible) {
         TaskDialog(
+            topAppBarTitle = { "새 태스크 생성" },
             onCreateClick = boardState::addTask,
             onDismissClick = boardState::hideTaskDialog,
         )
