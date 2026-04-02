@@ -7,6 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import woowacourse.kanban.board.domain.KanbanTask
 import woowacourse.kanban.board.domain.Tag
+import woowacourse.kanban.board.domain.TaskStatus
 
 class TaskFormState {
     var title by mutableStateOf("")
@@ -60,6 +61,17 @@ class TaskFormState {
     fun onTagChanged(value: String) {
         tagValue = value
     }
+
+    fun assigneeResult(value: TaskStatus): List<String> {
+        val assignee = when (value) {
+            TaskStatus.TODO -> listOf("없음", "다이노", "페임스")
+            TaskStatus.IN_PROGRESS -> listOf("다이노", "페임스")
+            TaskStatus.REVIEW -> listOf("다이노", "페임스")
+            TaskStatus.DONE -> listOf("다이노", "페임스")
+        }
+        return assignee
+    }
+
 }
 
 @Composable

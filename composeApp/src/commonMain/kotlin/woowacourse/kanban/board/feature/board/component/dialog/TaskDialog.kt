@@ -18,10 +18,8 @@ fun TaskDialog(
     onCreateClick: (result: TaskFormResult) -> Unit,
     onDismissClick: () -> Unit,
     modifier: Modifier = Modifier,
-    assignees: List<String> = listOf("다이노", "페임스"),
 ) {
     val formState = rememberTaskFormState()
-    val statuses = TaskStatus.entries
 
     var selectedStatusIndex by remember { mutableIntStateOf(0) }
     var selectedAssigneeIndex by remember { mutableIntStateOf(0) }
@@ -48,10 +46,10 @@ fun TaskDialog(
             isTagCountError = formState.isTagCountError,
             isTagFormatError = formState.isTagFormatError,
             onTagChanged = { formState.onTagChanged(it) },
-            statuses = statuses,
+            statuses = TaskStatus.entries,
             selectedStatusIndex = selectedStatusIndex,
             onStatusChanged = { selectedStatusIndex = it },
-            assignees = assignees,
+            assignees = formState.assigneeResult(TaskStatus.entries[selectedStatusIndex]),
             selectedAssigneeIndex = selectedAssigneeIndex,
             onAssigneeChanged = { selectedAssigneeIndex = it },
             enabled = formState.isCreateButtonEnabled,
@@ -62,8 +60,8 @@ fun TaskDialog(
                         title = formState.title,
                         description = formState.description.takeIf { it.isNotBlank() },
                         tags = formState.tags,
-                        status = statuses[selectedStatusIndex],
-                        assignee = assignees[selectedAssigneeIndex],
+                        status = TaskStatus.entries[selectedStatusIndex],
+                        assignee = formState.assigneeResult(TaskStatus.entries[selectedStatusIndex])[selectedAssigneeIndex]
                     ),
                 )
             },
