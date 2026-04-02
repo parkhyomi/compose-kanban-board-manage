@@ -10,13 +10,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.launch
 import woowacourse.kanban.board.core.designsystem.component.KanbanSnackbar
+import woowacourse.kanban.board.core.designsystem.component.Preview.KanbanPreview
 import woowacourse.kanban.board.feature.board.KanbanBoardScreen
 
 @Composable
-@Preview
+@KanbanPreview
 fun App() {
     MaterialTheme {
         val snackbarHostState = remember { SnackbarHostState() }

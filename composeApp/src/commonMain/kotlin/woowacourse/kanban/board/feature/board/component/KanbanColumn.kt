@@ -170,6 +170,11 @@ private fun KanbanColumnPreview() {
         )
 
         KanbanColumn(
+            status = TaskStatus.REVIEW,
+            tasks = listOf(kanbanTask1, kanbanTask2),
+        )
+
+        KanbanColumn(
             status = TaskStatus.DONE,
             tasks = listOf(kanbanTask1, kanbanTask2),
         )
