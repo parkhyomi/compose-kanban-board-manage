@@ -8,6 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import woowacourse.kanban.board.domain.KanbanBoard
 import woowacourse.kanban.board.domain.KanbanTask
+import woowacourse.kanban.board.domain.MoveResult
 import woowacourse.kanban.board.domain.TaskStatus
 import woowacourse.kanban.board.feature.board.component.dialog.model.TaskFormResult
 import woowacourse.kanban.board.feature.board.model.SnackbarEvent
@@ -48,8 +49,16 @@ class KanbanBoardState(initialBoard: KanbanBoard = KanbanBoard()) {
     }
 
     fun moveTask(task: KanbanTask, targetStatus: TaskStatus) {
-        kanbanBoard = kanbanBoard.moveTask(task.id, targetStatus)
-        emitSnackbar(SnackbarMessageType.TaskMoved)
+        when (val result = kanbanBoard.moveTask(task.id, targetStatus)) {
+            is MoveResult.MoveSuccess -> {
+                kanbanBoard = result.updatedBoard
+                emitSnackbar(SnackbarMessageType.TaskMoved)
+            }
+
+            is MoveResult.MoveFailed -> {
+                emitSnackbar(SnackbarMessageType.TaskMoveFailed)
+            }
+        }
     }
 
     fun addTask(result: TaskFormResult) {
