@@ -6,7 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import java.util.UUID
+import woowacourse.kanban.board.domain.CanDeleteResult
 import woowacourse.kanban.board.domain.KanbanBoard
 import woowacourse.kanban.board.domain.KanbanTask
 import woowacourse.kanban.board.domain.MoveResult
@@ -14,6 +14,7 @@ import woowacourse.kanban.board.domain.TaskStatus
 import woowacourse.kanban.board.feature.board.component.dialog.model.TaskFormResult
 import woowacourse.kanban.board.feature.board.model.SnackbarEvent
 import woowacourse.kanban.board.feature.board.model.SnackbarMessageType
+import java.util.UUID
 
 @Stable
 class KanbanBoardState(initialBoard: KanbanBoard = KanbanBoard()) {
@@ -97,14 +98,16 @@ class KanbanBoardState(initialBoard: KanbanBoard = KanbanBoard()) {
     }
 
     fun deleteTask(task: KanbanTask) {
-        runCatching {
-            val updatedTasks = kanbanBoard.tasks.filterNot { it.id == task.id }
-            kanbanBoard = kanbanBoard.copy(tasks = updatedTasks)
-            hideCardDialog()
-        }.onSuccess {
-            emitSnackbar(SnackbarMessageType.TaskDeleted)
-        }.onFailure {
-            emitSnackbar(SnackbarMessageType.TaskDeleteFailed)
+        when (val canDelete = kanbanBoard.canDelete(task)) {
+            is CanDeleteResult.DeleteSuccess -> {
+                kanbanBoard = canDelete.updatedBoard
+                hideCardDialog()
+                emitSnackbar(SnackbarMessageType.TaskDeleted)
+            }
+            is CanDeleteResult.DeleteFailed -> {
+                hideCardDialog()
+                emitSnackbar(SnackbarMessageType.TaskDeleteFailed)
+            }
         }
     }
 

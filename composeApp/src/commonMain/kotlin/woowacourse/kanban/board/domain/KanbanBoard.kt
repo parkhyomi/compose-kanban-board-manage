@@ -1,5 +1,6 @@
 package woowacourse.kanban.board.domain
 
+import woowacourse.kanban.board.feature.board.model.SnackbarMessageType
 import java.util.UUID
 
 data class KanbanBoard(val tasks: List<KanbanTask> = emptyList()) {
@@ -28,6 +29,17 @@ data class KanbanBoard(val tasks: List<KanbanTask> = emptyList()) {
         TaskStatus.DONE -> move == TaskStatus.TODO
     }
 
+    fun canDelete(task: KanbanTask): CanDeleteResult {
+        val deleteTask = tasks.filterNot { it.id == task.id }
+
+        if (task.status == TaskStatus.TODO || task.status == TaskStatus.IN_PROGRESS) {
+            val updatedBoard = copy(tasks = deleteTask)
+            return CanDeleteResult.DeleteSuccess(updatedBoard)
+        }else{
+            return CanDeleteResult.DeleteFailed
+        }
+    }
+
     val completionRate: Float
         get() {
             if (tasks.isEmpty()) return 0.0f
@@ -39,4 +51,9 @@ data class KanbanBoard(val tasks: List<KanbanTask> = emptyList()) {
 sealed class MoveResult{
     data class MoveSuccess(val updatedBoard: KanbanBoard) : MoveResult()
     data object MoveFailed : MoveResult()
+}
+
+sealed class CanDeleteResult{
+    data class DeleteSuccess(val updatedBoard: KanbanBoard) : CanDeleteResult()
+    data object DeleteFailed : CanDeleteResult()
 }
