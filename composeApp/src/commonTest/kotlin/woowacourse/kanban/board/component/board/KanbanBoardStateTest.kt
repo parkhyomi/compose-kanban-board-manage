@@ -164,6 +164,157 @@ class KanbanBoardStateTest {
     }
 
     @Test
+    fun `테스크 카드를 클릭하면 삭제,수정 다이어로그가 노출된다`(){
+        val result = TaskFormResult(
+            title = "새로운 태스크",
+            description = "태스크 설명",
+            tags = emptyList(),
+            status = TaskStatus.TODO,
+            assignee = "다이노",
+        )
+        val state = KanbanBoardState()
+        state.addTask(result)
+
+        val task = state.kanbanBoard.tasks.first()
+        state.showCardDialog(task)
+
+        assertThat(state.selectedTask).isEqualTo(task)
+        assertThat(state.isCardDialogVisible).isTrue()
+    }
+
+    @Test
+    fun `카드를 클릭해서 제목, 내용, 태그, 상태, 담당자 변경 후 수정을 누르면 해당 카드의 수정사항이 반영되고 TaskUpdated 스낵바가 뜬다`() {
+        val result = TaskFormResult(
+            title = "새로운 태스크",
+            description = "태스크 설명",
+            tags = emptyList(),
+            status = TaskStatus.TODO,
+            assignee = "다이노",
+        )
+        val state = KanbanBoardState()
+        state.addTask(result)
+
+        val task = state.kanbanBoard.tasks.first()
+        state.showCardDialog(task)
+
+        val updatedResult = TaskFormResult(
+            title = "수정된 태스크",
+            description = "수정된 태스크 설명",
+            tags = emptyList(),
+            status = TaskStatus.IN_PROGRESS,
+            assignee = "페임스",
+        )
+
+        state.updateTask(task.id, updatedResult)
+
+        val updatedTask = state.kanbanBoard.tasks.first()
+        assertThat(updatedTask.title).isEqualTo("수정된 태스크")
+        assertThat(updatedTask.description).isEqualTo("수정된 태스크 설명")
+        assertThat(updatedTask.status).isEqualTo(TaskStatus.IN_PROGRESS)
+        assertThat(updatedTask.crewName).isEqualTo("페임스")
+        assertThat(state.isCardDialogVisible).isFalse()
+
+        assertThat(state.snackbarEvent?.type).isEqualTo(SnackbarMessageType.TaskUpdated)
+
+    }
+
+    @Test
+    fun `카드의 상태가 To Do 라면 카드 삭제를 눌렀을 때 해당 id 값의 카드는 삭제되고 TaskDeleted가 뜬다`() {
+        val result = TaskFormResult(
+            title = "새로운 태스크",
+            description = "태스크 설명",
+            tags = emptyList(),
+            status = TaskStatus.TODO,
+            assignee = "다이노",
+        )
+        val state = KanbanBoardState()
+        state.addTask(result)
+
+        val task = state.kanbanBoard.tasks.first()
+        state.showCardDialog(task)
+
+        state.deleteTask(task)
+
+        assertThat(state.isCardDialogVisible).isFalse()
+
+        assertThat(state.snackbarEvent?.type).isEqualTo(SnackbarMessageType.TaskDeleted)
+
+        assertThat(state.kanbanBoard.tasks).isEmpty()
+    }
+
+    @Test
+    fun `카드의 상태가 Review 라면 카드 삭제를 눌렀을 때 해당 id 값의 카드는 삭제되지 않고 TaskDeleteFailed가 뜬다`() {
+        val result = TaskFormResult(
+            title = "새로운 태스크",
+            description = "태스크 설명",
+            tags = emptyList(),
+            status = TaskStatus.REVIEW,
+            assignee = "다이노",
+        )
+        val state = KanbanBoardState()
+        state.addTask(result)
+
+        val task = state.kanbanBoard.tasks.first()
+        state.showCardDialog(task)
+
+        state.deleteTask(task)
+
+        assertThat(state.isCardDialogVisible).isFalse()
+
+        assertThat(state.snackbarEvent?.type).isEqualTo(SnackbarMessageType.TaskDeleteFailed)
+
+        assertThat(state.kanbanBoard.tasks).isNotEmpty()
+    }
+
+    @Test
+    fun `카드의 상태가 In Progress이라면 카드 삭제를 눌렀을 때 해당 id 값의 카드는 삭제되고 TaskDeleted가 뜬다`() {
+        val result = TaskFormResult(
+            title = "새로운 태스크",
+            description = "태스크 설명",
+            tags = emptyList(),
+            status = TaskStatus.IN_PROGRESS,
+            assignee = "다이노",
+        )
+        val state = KanbanBoardState()
+        state.addTask(result)
+
+        val task = state.kanbanBoard.tasks.first()
+        state.showCardDialog(task)
+
+        state.deleteTask(task)
+
+        assertThat(state.isCardDialogVisible).isFalse()
+
+        assertThat(state.snackbarEvent?.type).isEqualTo(SnackbarMessageType.TaskDeleted)
+
+        assertThat(state.kanbanBoard.tasks).isEmpty()
+    }
+
+    @Test
+    fun `카드의 상태가 Done 라면 카드 삭제를 눌렀을 때 해당 id 값의 카드는 삭제되지 않고 TaskDeleteFailed가 뜬다`() {
+        val result = TaskFormResult(
+            title = "새로운 태스크",
+            description = "태스크 설명",
+            tags = emptyList(),
+            status = TaskStatus.DONE,
+            assignee = "다이노",
+        )
+        val state = KanbanBoardState()
+        state.addTask(result)
+
+        val task = state.kanbanBoard.tasks.first()
+        state.showCardDialog(task)
+
+        state.deleteTask(task)
+
+        assertThat(state.isCardDialogVisible).isFalse()
+
+        assertThat(state.snackbarEvent?.type).isEqualTo(SnackbarMessageType.TaskDeleteFailed)
+
+        assertThat(state.kanbanBoard.tasks).isNotEmpty()
+    }
+
+    @Test
     fun `moveTask를 호출하면 보드의 태스크가 이동된다`() {
 
         val taskToMove = KanbanTask(
@@ -178,12 +329,12 @@ class KanbanBoardStateTest {
         )
         val state = KanbanBoardState(KanbanBoard(listOf(taskToMove, otherTask)))
 
-        state.moveTask(taskToMove, TaskStatus.DONE)
+        state.moveTask(taskToMove, TaskStatus.IN_PROGRESS)
 
         val moved = state.kanbanBoard.tasks.first { it.id == taskToMove.id }
         val untouched = state.kanbanBoard.tasks.first { it.id == otherTask.id }
 
-        assertThat(moved.status).isEqualTo(TaskStatus.DONE)
+        assertThat(moved.status).isEqualTo(TaskStatus.IN_PROGRESS)
 
         assertThat(untouched.status).isEqualTo(TaskStatus.IN_PROGRESS)
 
