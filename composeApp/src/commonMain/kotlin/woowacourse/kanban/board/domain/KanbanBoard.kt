@@ -24,7 +24,7 @@ data class KanbanBoard(val tasks: List<KanbanTask> = emptyList()) {
 
     private fun canMove(form: TaskStatus, move: TaskStatus): Boolean = when(form) {
         TaskStatus.TODO -> move == TaskStatus.IN_PROGRESS
-        TaskStatus.IN_PROGRESS -> move == TaskStatus.REVIEW || move == TaskStatus.DONE
+        TaskStatus.IN_PROGRESS -> move == TaskStatus.TODO || move == TaskStatus.REVIEW
         TaskStatus.REVIEW -> move == TaskStatus.IN_PROGRESS || move == TaskStatus.DONE
         TaskStatus.DONE -> move == TaskStatus.TODO
     }
