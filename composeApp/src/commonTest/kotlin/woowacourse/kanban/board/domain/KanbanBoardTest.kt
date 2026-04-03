@@ -56,10 +56,12 @@ class KanbanBoardTest {
         val board = KanbanBoard(listOf(task))
 
         // when
-        val updatedBoard = board.moveTask(task.id, TaskStatus.DONE)
+        val result = board.moveTask(task.id, TaskStatus.IN_PROGRESS)
 
         // then
-        assertThat(updatedBoard.tasks.first().status).isEqualTo(TaskStatus.DONE)
+        assertThat(result).isInstanceOf(MoveResult.MoveSuccess::class.java)
+        val updatedBoard = (result as MoveResult.MoveSuccess).updatedBoard
+        assertThat(updatedBoard.tasks.first().status).isEqualTo(TaskStatus.IN_PROGRESS)
         assertThat(updatedBoard.tasks.first().id).isEqualTo(task.id)
     }
 
@@ -70,9 +72,11 @@ class KanbanBoardTest {
         val board = KanbanBoard(listOf(task))
 
         // when
-        val updatedBoard = board.moveTask(task.id, TaskStatus.DONE)
+        val result = board.moveTask(task.id, TaskStatus.IN_PROGRESS)
 
         // then
+        assertThat(result).isInstanceOf(MoveResult.MoveSuccess::class.java)
+        val updatedBoard = (result as MoveResult.MoveSuccess).updatedBoard
         assertThat(updatedBoard).isNotSameAs(board)
         assertThat(board.tasks.first().status).isEqualTo(TaskStatus.TODO)
     }
@@ -85,10 +89,10 @@ class KanbanBoardTest {
         val nonExistentTask = createTask()
 
         // when
-        val updatedBoard = board.moveTask(nonExistentTask.id, TaskStatus.DONE)
+        val result = board.moveTask(nonExistentTask.id, TaskStatus.DONE)
 
         // then
-        assertThat(updatedBoard.tasks).isEqualTo(board.tasks)
+        assertThat(result).isEqualTo(MoveResult.MoveFailed)
     }
 
     @Test
