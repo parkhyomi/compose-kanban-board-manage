@@ -1,4 +1,4 @@
-package woowacourse.kanban.board.feature.board.component.dialog.component
+package woowacourse.kanban.board.feature.board.component.dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +25,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import woowacourse.kanban.board.domain.TaskStatus
+import woowacourse.kanban.board.feature.board.component.dialog.component.AssigneeOptionCard
+import woowacourse.kanban.board.feature.board.component.dialog.component.StatusOptionCard
+import woowacourse.kanban.board.feature.board.component.dialog.component.TaskDialogButton
+import woowacourse.kanban.board.feature.board.component.dialog.component.TaskDialogTextField
+import woowacourse.kanban.board.feature.board.component.dialog.component.TaskDialogTopAppBar
+import woowacourse.kanban.board.feature.board.component.dialog.component.TaskFieldLabel
 import woowacourse.kanban.board.feature.board.mapper.toDisplayText
 
 @Composable
