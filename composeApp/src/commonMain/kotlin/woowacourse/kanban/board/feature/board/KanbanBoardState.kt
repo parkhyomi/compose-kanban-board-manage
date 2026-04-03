@@ -88,7 +88,7 @@ class KanbanBoardState(initialBoard: KanbanBoard = KanbanBoard()) {
                 status = result.status,
                 crewName = result.assignee,
             )
-            kanbanBoard = kanbanBoard.copy(tasks = kanbanBoard.tasks + newTask)
+            kanbanBoard = kanbanBoard.addTask(newTask)
             hideTaskDialog()
         }.onSuccess {
             emitSnackbar(SnackbarMessageType.TaskAdded)
