@@ -29,15 +29,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import woowacourse.kanban.board.domain.KanbanBoard
-import woowacourse.kanban.board.domain.TaskStatus
 
 @Composable
-fun KanbanBoardHeader(board: KanbanBoard, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    val completionRate = board.completionRate
-    val completeCount = board.getCountByStatus(TaskStatus.DONE)
-    val totalCount = board.tasks.size
-
+fun KanbanBoardHeader(
+    projectName: String,
+    completionText: String,
+    progress: Float,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -58,12 +58,12 @@ fun KanbanBoardHeader(board: KanbanBoard, onClick: () -> Unit, modifier: Modifie
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Text(
-                    text = "Compose1",
+                    text = projectName,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Medium,
                 )
                 Text(
-                    text = "완료율: ${(completionRate * 100).toInt()}% ($completeCount/$totalCount)",
+                    text = completionText,
                     fontSize = 14.sp,
                     color = Color.Gray,
                 )
@@ -90,7 +90,7 @@ fun KanbanBoardHeader(board: KanbanBoard, onClick: () -> Unit, modifier: Modifie
         LinearProgressIndicator(
             gapSize = 0.dp,
             strokeCap = StrokeCap.Square,
-            progress = { completionRate },
+            progress = { progress },
             modifier = Modifier.clip(CircleShape).fillMaxWidth(),
             color = Color.Blue,
             trackColor = Color.Gray,
@@ -103,7 +103,9 @@ fun KanbanBoardHeader(board: KanbanBoard, onClick: () -> Unit, modifier: Modifie
 @Composable
 private fun KanbanBoardHeaderPreview() {
     KanbanBoardHeader(
-        board = KanbanBoard(),
+        projectName = "Compose1",
+        completionText = "완료율: 0% (0/0)",
+        progress = 0f,
         onClick = {},
     )
 }

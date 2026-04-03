@@ -37,13 +37,19 @@ fun KanbanBoardContent(
     var currentDragPosition by remember { mutableStateOf<Offset?>(null) }
     val columnBounds = remember { mutableStateMapOf<TaskStatus, Rect>() }
 
+    val completionRate = kanbanBoard.completionRate
+    val completeCount = kanbanBoard.getCountByStatus(TaskStatus.DONE)
+    val totalCount = kanbanBoard.tasks.size
+
     Column(
         modifier = modifier
             .background(Color.White)
             .fillMaxSize(),
     ) {
         KanbanBoardHeader(
-            board = kanbanBoard,
+            projectName = "Compose1",
+            completionText = "완료율: ${(completionRate * 100).toInt()}% ($completeCount/$totalCount)",
+            progress = completionRate,
             onClick = onTaskCreateClick,
             modifier = Modifier,
         )
