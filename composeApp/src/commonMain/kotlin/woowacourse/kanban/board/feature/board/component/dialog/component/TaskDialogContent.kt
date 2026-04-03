@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -44,10 +45,9 @@ fun TaskDialogContent(
     assignees: List<String>,
     selectedAssigneeIndex: Int,
     onAssigneeChanged: (Int) -> Unit,
-    enabled: Boolean,
     onDismissClick: () -> Unit,
-    onCreateClick: () -> Unit,
     modifier: Modifier = Modifier,
+    content: @Composable RowScope. () -> Unit,
 ) {
     val isTagError = isTagCountError || isTagFormatError
     val tagErrorMessage = when {
@@ -179,13 +179,9 @@ fun TaskDialogContent(
                 onClick = onDismissClick,
             )
             Spacer(Modifier.width(12.dp))
-            TaskDialogButton(
-                text = "생성",
-                onClick = onCreateClick,
-                enabled = enabled,
-                contentColor = Color.White,
-                containerColor = Color.Blue,
-            )
+
+            content()
+
         }
     }
 }
@@ -231,8 +227,7 @@ private fun TaskDialogContentPreview() {
         assignees = listOf("다이노", "페임스"),
         selectedAssigneeIndex = 0,
         onAssigneeChanged = {},
-        enabled = false,
         onDismissClick = {},
-        onCreateClick = {},
+        content = {},
     )
 }
