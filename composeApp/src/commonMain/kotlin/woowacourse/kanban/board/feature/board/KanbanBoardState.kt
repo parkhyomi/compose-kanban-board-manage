@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import java.util.UUID
 import woowacourse.kanban.board.domain.KanbanBoard
 import woowacourse.kanban.board.domain.KanbanTask
 import woowacourse.kanban.board.domain.MoveResult
@@ -22,6 +23,12 @@ class KanbanBoardState(initialBoard: KanbanBoard = KanbanBoard()) {
     var isTaskDialogVisible by mutableStateOf(false)
         private set
 
+    var isCardDialogVisible by mutableStateOf(false)
+        private set
+
+    var selectedTask by mutableStateOf<KanbanTask?>(null)
+        private set
+
     var snackbarEvent: SnackbarEvent? by mutableStateOf(null)
         private set
 
@@ -31,8 +38,18 @@ class KanbanBoardState(initialBoard: KanbanBoard = KanbanBoard()) {
         isTaskDialogVisible = true
     }
 
+    fun showCardDialog(task: KanbanTask) {
+        selectedTask = task
+        isCardDialogVisible = true
+    }
+
     fun hideTaskDialog() {
         isTaskDialogVisible = false
+    }
+
+    fun hideCardDialog() {
+        selectedTask = null
+        isCardDialogVisible = false
     }
 
     fun clearSnackbar(consumedId: Long) {
@@ -76,6 +93,40 @@ class KanbanBoardState(initialBoard: KanbanBoard = KanbanBoard()) {
             emitSnackbar(SnackbarMessageType.TaskAdded)
         }.onFailure { e ->
             emitSnackbar(SnackbarMessageType.TaskAddFailed)
+        }
+    }
+
+    fun deleteTask(task: KanbanTask) {
+        runCatching {
+            val updatedTasks = kanbanBoard.tasks.filterNot { it.id == task.id }
+            kanbanBoard = kanbanBoard.copy(tasks = updatedTasks)
+            hideCardDialog()
+        }.onSuccess {
+            emitSnackbar(SnackbarMessageType.TaskDeleted)
+        }.onFailure {
+            emitSnackbar(SnackbarMessageType.TaskDeleteFailed)
+        }
+    }
+
+    fun updateTask(taskId: UUID, result: TaskFormResult) {
+        runCatching {
+            val updatedTask = kanbanBoard.tasks.first { it.id == taskId }.copy(
+                title = result.title,
+                description = result.description,
+                tags = result.tags,
+                status = result.status,
+                crewName = result.assignee,
+            )
+            kanbanBoard = kanbanBoard.copy(
+                tasks = kanbanBoard.tasks.map { task ->
+                    if (task.id == taskId) updatedTask else task
+                },
+            )
+            hideCardDialog()
+        }.onSuccess {
+            emitSnackbar(SnackbarMessageType.TaskUpdated)
+        }.onFailure {
+            emitSnackbar(SnackbarMessageType.TaskUpdateFailed)
         }
     }
 }
