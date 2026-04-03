@@ -29,22 +29,3 @@ Done
 ```
 
 ### 테스트 시나리오
-
-#### **상태변경**
-*To Do*
-- 상태 변경은 To Do에서는 In Progress로만 가능하다
-- 상태 변경은 To Do에서는 Review, Done으로 불가능하다
-- To Do에서 In Progress로 상태를 변경하는데 담당자가 미지정 되어 있을경우 상태 전이는 불가능하다
-- To Do에서 In Progress로 담당자가 미지정 되어 있어 상태 전이가 안 된 경우 스낵바 "해당 상태로 옮길 수 없습니다." 가 뜬다
-
-*In Progress*
-- 상태 변경은 In Progress에서는 To Do, Review로 가능하다
-- 상태 변경은 In Progress에서는 Done으로 불가능하다
-
-*Review*
-- 상태 변경은 Review에서는 In Progress, Done으로 가능하다
-- 상태 변경은 Review에서는 To Do로 불가능하다
-
-*Done*
-- 상태 변경은 Done에서는 To Do로만 가능하다
-- 상태 변경은 Done에서는 Review, In Progress로 불가능하다
