@@ -315,7 +315,7 @@ class KanbanBoardStateTest {
     }
 
     @Test
-    fun `moveTask를 호출하면 보드의 태스크가 이동된다`() {
+    fun `moveTask를 호출하여 상태 변경울 하면 To Do에서는 In Progress로만 가능하고 TaskMoved 스낵바가 뜬다`() {
 
         val taskToMove = KanbanTask(
             title = "A",
@@ -335,9 +335,255 @@ class KanbanBoardStateTest {
         val untouched = state.kanbanBoard.tasks.first { it.id == otherTask.id }
 
         assertThat(moved.status).isEqualTo(TaskStatus.IN_PROGRESS)
-
         assertThat(untouched.status).isEqualTo(TaskStatus.IN_PROGRESS)
-
         assertThat(state.snackbarEvent?.type).isEqualTo(SnackbarMessageType.TaskMoved)
+    }
+
+    @Test
+    fun `moveTask를 호출하여 상태 변경울 하면 To Do에서는 Review, Done으로 불가능하고 TaskMoveFailed 스낵바가 뜬다`() {
+
+        val taskToMove = KanbanTask(
+            title = "A",
+            status = TaskStatus.TODO,
+            crewName = "다이노",
+        )
+        val otherTask = KanbanTask(
+            title = "B",
+            status = TaskStatus.IN_PROGRESS,
+            crewName = "페임스",
+        )
+        val state = KanbanBoardState(KanbanBoard(listOf(taskToMove, otherTask)))
+
+        /** To Do에서 Review로 이동 불가능 테스트 **/
+        state.moveTask(taskToMove, TaskStatus.REVIEW)
+
+        val movedReview = state.kanbanBoard.tasks.first { it.id == taskToMove.id }
+        val untouched = state.kanbanBoard.tasks.first { it.id == otherTask.id }
+
+        assertThat(movedReview.status).isNotEqualTo(TaskStatus.REVIEW)
+        assertThat(untouched.status).isEqualTo(TaskStatus.IN_PROGRESS)
+        assertThat(state.snackbarEvent?.type).isEqualTo(SnackbarMessageType.TaskMoveFailed)
+
+        /** To Do에서 Done 이동 불가능 테스트 **/
+        state.moveTask(taskToMove, TaskStatus.DONE)
+
+        val movedDone = state.kanbanBoard.tasks.first { it.id == taskToMove.id }
+
+        assertThat(movedDone.status).isNotEqualTo(TaskStatus.DONE)
+        assertThat(untouched.status).isEqualTo(TaskStatus.IN_PROGRESS)
+        assertThat(state.snackbarEvent?.type).isEqualTo(SnackbarMessageType.TaskMoveFailed)
+    }
+
+    @Test
+    fun `moveTask를 호출하여 상태 변경울 하면 In Progress에서는 To Do로 가능하고 TaskMoved 스낵바가 뜬다`() {
+
+        val taskToMove = KanbanTask(
+            title = "A",
+            status = TaskStatus.IN_PROGRESS,
+            crewName = "다이노",
+        )
+        val otherTask = KanbanTask(
+            title = "B",
+            status = TaskStatus.DONE,
+            crewName = "페임스",
+        )
+        val state = KanbanBoardState(KanbanBoard(listOf(taskToMove, otherTask)))
+
+        state.moveTask(taskToMove, TaskStatus.TODO)
+
+        val moved = state.kanbanBoard.tasks.first { it.id == taskToMove.id }
+        val untouched = state.kanbanBoard.tasks.first { it.id == otherTask.id }
+
+        assertThat(moved.status).isEqualTo(TaskStatus.TODO)
+        assertThat(untouched.status).isEqualTo(TaskStatus.DONE)
+        assertThat(state.snackbarEvent?.type).isEqualTo(SnackbarMessageType.TaskMoved)
+    }
+
+    @Test
+    fun `moveTask를 호출하여 상태 변경울 하면 In Progress에서는 Review로 가능하고 TaskMoved 스낵바가 뜬다`() {
+
+        val taskToMove = KanbanTask(
+            title = "A",
+            status = TaskStatus.IN_PROGRESS,
+            crewName = "다이노",
+        )
+        val otherTask = KanbanTask(
+            title = "B",
+            status = TaskStatus.DONE,
+            crewName = "페임스",
+        )
+        val state = KanbanBoardState(KanbanBoard(listOf(taskToMove, otherTask)))
+
+        state.moveTask(taskToMove, TaskStatus.REVIEW)
+
+        val moved = state.kanbanBoard.tasks.first { it.id == taskToMove.id }
+        val untouched = state.kanbanBoard.tasks.first { it.id == otherTask.id }
+
+        assertThat(moved.status).isEqualTo(TaskStatus.REVIEW)
+        assertThat(untouched.status).isEqualTo(TaskStatus.DONE)
+        assertThat(state.snackbarEvent?.type).isEqualTo(SnackbarMessageType.TaskMoved)
+    }
+
+    @Test
+    fun `moveTask를 호출하여 상태 변경울 하면 In Progress에서는 Done으로 불가능하고 TaskMoveFailed 스낵바가 뜬다`() {
+
+        val taskToMove = KanbanTask(
+            title = "A",
+            status = TaskStatus.IN_PROGRESS,
+            crewName = "다이노",
+        )
+        val otherTask = KanbanTask(
+            title = "B",
+            status = TaskStatus.DONE,
+            crewName = "페임스",
+        )
+        val state = KanbanBoardState(KanbanBoard(listOf(taskToMove, otherTask)))
+
+        /** In Progress에서 DONE 이동 불가능 테스트 **/
+        state.moveTask(taskToMove, TaskStatus.DONE)
+
+        val movedReview = state.kanbanBoard.tasks.first { it.id == taskToMove.id }
+        val untouched = state.kanbanBoard.tasks.first { it.id == otherTask.id }
+
+        assertThat(movedReview.status).isNotEqualTo(TaskStatus.DONE)
+        assertThat(untouched.status).isEqualTo(TaskStatus.DONE)
+        assertThat(state.snackbarEvent?.type).isEqualTo(SnackbarMessageType.TaskMoveFailed)
+
+    }
+
+    @Test
+    fun `moveTask를 호출하여 상태 변경울 하면 Review에서는 In Progress로 가능하고 TaskMoved 스낵바가 뜬다`() {
+
+        val taskToMove = KanbanTask(
+            title = "A",
+            status = TaskStatus.REVIEW,
+            crewName = "다이노",
+        )
+        val otherTask = KanbanTask(
+            title = "B",
+            status = TaskStatus.TODO,
+            crewName = "페임스",
+        )
+        val state = KanbanBoardState(KanbanBoard(listOf(taskToMove, otherTask)))
+
+        state.moveTask(taskToMove, TaskStatus.IN_PROGRESS)
+
+        val moved = state.kanbanBoard.tasks.first { it.id == taskToMove.id }
+        val untouched = state.kanbanBoard.tasks.first { it.id == otherTask.id }
+
+        assertThat(moved.status).isEqualTo(TaskStatus.IN_PROGRESS)
+        assertThat(untouched.status).isEqualTo(TaskStatus.TODO)
+        assertThat(state.snackbarEvent?.type).isEqualTo(SnackbarMessageType.TaskMoved)
+    }
+
+    @Test
+    fun `moveTask를 호출하여 상태 변경울 하면 Review에서는 Done으로 가능하고 TaskMoved 스낵바가 뜬다`() {
+
+        val taskToMove = KanbanTask(
+            title = "A",
+            status = TaskStatus.REVIEW,
+            crewName = "다이노",
+        )
+        val otherTask = KanbanTask(
+            title = "B",
+            status = TaskStatus.TODO,
+            crewName = "페임스",
+        )
+        val state = KanbanBoardState(KanbanBoard(listOf(taskToMove, otherTask)))
+
+        state.moveTask(taskToMove, TaskStatus.DONE)
+
+        val moved = state.kanbanBoard.tasks.first { it.id == taskToMove.id }
+        val untouched = state.kanbanBoard.tasks.first { it.id == otherTask.id }
+
+        assertThat(moved.status).isEqualTo(TaskStatus.DONE)
+        assertThat(untouched.status).isEqualTo(TaskStatus.TODO)
+        assertThat(state.snackbarEvent?.type).isEqualTo(SnackbarMessageType.TaskMoved)
+    }
+
+    @Test
+    fun `moveTask를 호출하여 상태 변경울 하면 Review에서는 To Do로 불가능하고 TaskMoveFailed 스낵바가 뜬다`() {
+
+        val taskToMove = KanbanTask(
+            title = "A",
+            status = TaskStatus.REVIEW,
+            crewName = "다이노",
+        )
+        val otherTask = KanbanTask(
+            title = "B",
+            status = TaskStatus.IN_PROGRESS,
+            crewName = "페임스",
+        )
+        val state = KanbanBoardState(KanbanBoard(listOf(taskToMove, otherTask)))
+
+        /** Review에서 To Do로 이동 불가능 테스트 **/
+        state.moveTask(taskToMove, TaskStatus.TODO)
+
+        val movedReview = state.kanbanBoard.tasks.first { it.id == taskToMove.id }
+        val untouched = state.kanbanBoard.tasks.first { it.id == otherTask.id }
+
+        assertThat(movedReview.status).isNotEqualTo(TaskStatus.TODO)
+        assertThat(untouched.status).isEqualTo(TaskStatus.IN_PROGRESS)
+        assertThat(state.snackbarEvent?.type).isEqualTo(SnackbarMessageType.TaskMoveFailed)
+    }
+
+    @Test
+    fun `moveTask를 호출하여 상태 변경울 하면 Done에서는 To Do로만 가능하고 TaskMoved 스낵바가 뜬다`() {
+
+        val taskToMove = KanbanTask(
+            title = "A",
+            status = TaskStatus.DONE,
+            crewName = "다이노",
+        )
+        val otherTask = KanbanTask(
+            title = "B",
+            status = TaskStatus.IN_PROGRESS,
+            crewName = "페임스",
+        )
+        val state = KanbanBoardState(KanbanBoard(listOf(taskToMove, otherTask)))
+
+        state.moveTask(taskToMove, TaskStatus.TODO)
+
+        val moved = state.kanbanBoard.tasks.first { it.id == taskToMove.id }
+        val untouched = state.kanbanBoard.tasks.first { it.id == otherTask.id }
+
+        assertThat(moved.status).isEqualTo(TaskStatus.TODO)
+        assertThat(untouched.status).isEqualTo(TaskStatus.IN_PROGRESS)
+        assertThat(state.snackbarEvent?.type).isEqualTo(SnackbarMessageType.TaskMoved)
+    }
+
+    @Test
+    fun `moveTask를 호출하여 상태 변경울 하면 Done으로에서는 Review, In Progress으로 불가능하고 TaskMoveFailed 스낵바가 뜬다`() {
+
+        val taskToMove = KanbanTask(
+            title = "A",
+            status = TaskStatus.DONE,
+            crewName = "다이노",
+        )
+        val otherTask = KanbanTask(
+            title = "B",
+            status = TaskStatus.TODO,
+            crewName = "페임스",
+        )
+        val state = KanbanBoardState(KanbanBoard(listOf(taskToMove, otherTask)))
+
+        /** DONE에서 Review로 이동 불가능 테스트 **/
+        state.moveTask(taskToMove, TaskStatus.REVIEW)
+
+        val movedReview = state.kanbanBoard.tasks.first { it.id == taskToMove.id }
+        val untouched = state.kanbanBoard.tasks.first { it.id == otherTask.id }
+
+        assertThat(movedReview.status).isNotEqualTo(TaskStatus.REVIEW)
+        assertThat(untouched.status).isEqualTo(TaskStatus.TODO)
+        assertThat(state.snackbarEvent?.type).isEqualTo(SnackbarMessageType.TaskMoveFailed)
+
+        /** DONE에서 IN_PROGRESS 이동 불가능 테스트 **/
+        state.moveTask(taskToMove, TaskStatus.IN_PROGRESS)
+
+        val movedDone = state.kanbanBoard.tasks.first { it.id == taskToMove.id }
+
+        assertThat(movedDone.status).isNotEqualTo(TaskStatus.IN_PROGRESS)
+        assertThat(untouched.status).isEqualTo(TaskStatus.TODO)
+        assertThat(state.snackbarEvent?.type).isEqualTo(SnackbarMessageType.TaskMoveFailed)
     }
 }
