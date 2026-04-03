@@ -56,7 +56,7 @@ fun KanbanCard(
     Column(
         modifier = modifier
             .width(286.dp)
-            .clickable( onClick = onCardClick)
+            .clickable(onClick = onCardClick)
             .onGloballyPositioned { cardWindowPosition = it.positionInWindow() }
             .pointerInput(Unit) {
                 detectDragGestures(

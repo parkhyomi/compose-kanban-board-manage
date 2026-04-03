@@ -12,12 +12,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import java.util.UUID
 import woowacourse.kanban.board.core.designsystem.theme.KanbanRed
 import woowacourse.kanban.board.domain.KanbanTask
 import woowacourse.kanban.board.domain.TaskStatus
 import woowacourse.kanban.board.feature.board.component.dialog.component.TaskDialogButton
 import woowacourse.kanban.board.feature.board.component.dialog.model.TaskFormResult
-import java.util.UUID
 
 @Composable
 fun CardDialog(
@@ -71,7 +71,7 @@ fun CardDialog(
             selectedAssigneeIndex = selectedAssigneeIndex,
             onAssigneeChanged = { selectedAssigneeIndex = it },
             onDismissClick = onDismissClick,
-        ){
+        ) {
             TaskDialogButton(
                 text = "삭제",
                 onClick = {

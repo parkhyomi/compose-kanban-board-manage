@@ -1,8 +1,8 @@
 package woowacourse.kanban.board.component.mapper
 
+import kotlin.test.Test
 import org.assertj.core.api.Assertions.assertThat
 import woowacourse.kanban.board.feature.board.mapper.toSnackbarMessage
-import kotlin.test.Test
 import woowacourse.kanban.board.feature.board.model.SnackbarMessageType
 
 class SnackbarMessageMapperTest {

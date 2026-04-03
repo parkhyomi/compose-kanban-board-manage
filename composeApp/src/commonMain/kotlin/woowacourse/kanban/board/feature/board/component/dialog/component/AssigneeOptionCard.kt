@@ -3,7 +3,6 @@ package woowacourse.kanban.board.feature.board.component.dialog.component
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -20,17 +19,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import woowacourse.kanban.board.domain.TaskStatus
-import woowacourse.kanban.board.feature.board.component.dialog.rememberTaskFormState
-import woowacourse.kanban.board.feature.board.rememberKanbanBoardState
 
 @Composable
-fun AssigneeOptionCard(
-    name: String,
-    isSelected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+fun AssigneeOptionCard(name: String, isSelected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
     TaskOptionCard(
         isSelected = isSelected,
         onClick = onClick,
@@ -41,7 +32,7 @@ fun AssigneeOptionCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            if(name != "없음"){
+            if (name != "없음") {
                 Icon(
                     imageVector = Icons.Default.AccountCircle,
                     contentDescription = "기본 이미지",

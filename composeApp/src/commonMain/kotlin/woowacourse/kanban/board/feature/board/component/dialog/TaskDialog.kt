@@ -14,11 +14,7 @@ import woowacourse.kanban.board.feature.board.component.dialog.component.TaskDia
 import woowacourse.kanban.board.feature.board.component.dialog.model.TaskFormResult
 
 @Composable
-fun TaskDialog(
-    onCreateClick: (result: TaskFormResult) -> Unit,
-    onDismissClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+fun TaskDialog(onCreateClick: (result: TaskFormResult) -> Unit, onDismissClick: () -> Unit, modifier: Modifier = Modifier) {
     val formState = rememberTaskFormState()
 
     var selectedStatusIndex by remember { mutableIntStateOf(0) }
@@ -56,7 +52,7 @@ fun TaskDialog(
             selectedAssigneeIndex = selectedAssigneeIndex,
             onAssigneeChanged = { selectedAssigneeIndex = it },
             onDismissClick = onDismissClick,
-            ){
+        ) {
             TaskDialogButton(
                 text = "생성",
                 onClick = {

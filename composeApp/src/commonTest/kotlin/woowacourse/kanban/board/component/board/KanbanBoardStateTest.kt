@@ -1,5 +1,6 @@
 package woowacourse.kanban.board.component.board
 
+import kotlin.test.Test
 import org.assertj.core.api.Assertions.assertThat
 import woowacourse.kanban.board.domain.KanbanBoard
 import woowacourse.kanban.board.domain.KanbanTask
@@ -7,7 +8,6 @@ import woowacourse.kanban.board.domain.TaskStatus
 import woowacourse.kanban.board.feature.board.KanbanBoardState
 import woowacourse.kanban.board.feature.board.component.dialog.model.TaskFormResult
 import woowacourse.kanban.board.feature.board.model.SnackbarMessageType
-import kotlin.test.Test
 
 class KanbanBoardStateTest {
 
@@ -149,7 +149,7 @@ class KanbanBoardStateTest {
     }
 
     @Test
-    fun `테스크 카드를 클릭하면 삭제,수정 다이어로그가 노출된다`(){
+    fun `테스크 카드를 클릭하면 삭제,수정 다이어로그가 노출된다`() {
         val result = TaskFormResult(
             title = "새로운 태스크",
             description = "태스크 설명",
@@ -200,7 +200,6 @@ class KanbanBoardStateTest {
         assertThat(state.isCardDialogVisible).isFalse()
 
         assertThat(state.snackbarEvent?.type).isEqualTo(SnackbarMessageType.TaskUpdated)
-
     }
 
     @Test
@@ -433,7 +432,6 @@ class KanbanBoardStateTest {
         assertThat(movedReview.status).isNotEqualTo(TaskStatus.DONE)
         assertThat(untouched.status).isEqualTo(TaskStatus.DONE)
         assertThat(state.snackbarEvent?.type).isEqualTo(SnackbarMessageType.TaskMoveFailed)
-
     }
 
     @Test

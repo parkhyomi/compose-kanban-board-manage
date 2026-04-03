@@ -9,11 +9,7 @@ import woowacourse.kanban.board.domain.KanbanTask
 import woowacourse.kanban.board.domain.Tag
 import woowacourse.kanban.board.domain.TaskStatus
 
-class TaskFormState(
-    initialTitle: String = "",
-    initialDescription: String = "",
-    initialTagValue: String = "",
-) {
+class TaskFormState(initialTitle: String = "", initialDescription: String = "", initialTagValue: String = "") {
     var title by mutableStateOf(initialTitle)
         private set
 
@@ -75,7 +71,6 @@ class TaskFormState(
         }
         return assignee
     }
-
 }
 
 @Composable

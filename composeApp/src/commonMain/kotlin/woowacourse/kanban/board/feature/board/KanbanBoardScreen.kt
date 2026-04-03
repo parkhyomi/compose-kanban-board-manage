@@ -24,7 +24,6 @@ fun KanbanBoardScreen(
 
         onShowSnackbar(message)
         boardState.clearSnackbar(event.id)
-
     }
 
     Row(modifier = modifier.fillMaxSize()) {

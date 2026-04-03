@@ -1,6 +1,5 @@
 package woowacourse.kanban.board.domain
 
-import woowacourse.kanban.board.feature.board.model.SnackbarMessageType
 import java.util.UUID
 
 data class KanbanBoard(val tasks: List<KanbanTask> = emptyList()) {
@@ -8,7 +7,7 @@ data class KanbanBoard(val tasks: List<KanbanTask> = emptyList()) {
 
     fun getCountByStatus(status: TaskStatus): Int = tasks.count { it.status == status }
 
-    fun addTask(task: KanbanTask): KanbanBoard{
+    fun addTask(task: KanbanTask): KanbanBoard {
         val updatedBoard = copy(tasks = tasks + task)
         return updatedBoard
     }
@@ -24,10 +23,9 @@ data class KanbanBoard(val tasks: List<KanbanTask> = emptyList()) {
             },
         )
         return MoveResult.MoveSuccess(updatedBoard)
-
     }
 
-    private fun canMove(form: TaskStatus, move: TaskStatus): Boolean = when(form) {
+    private fun canMove(form: TaskStatus, move: TaskStatus): Boolean = when (form) {
         TaskStatus.TODO -> move == TaskStatus.IN_PROGRESS
         TaskStatus.IN_PROGRESS -> move == TaskStatus.TODO || move == TaskStatus.REVIEW
         TaskStatus.REVIEW -> move == TaskStatus.IN_PROGRESS || move == TaskStatus.DONE
@@ -40,7 +38,7 @@ data class KanbanBoard(val tasks: List<KanbanTask> = emptyList()) {
         if (task.status == TaskStatus.TODO || task.status == TaskStatus.IN_PROGRESS) {
             val updatedBoard = copy(tasks = deleteTask)
             return CanDeleteResult.DeleteSuccess(updatedBoard)
-        }else{
+        } else {
             return CanDeleteResult.DeleteFailed
         }
     }
@@ -53,12 +51,12 @@ data class KanbanBoard(val tasks: List<KanbanTask> = emptyList()) {
         }
 }
 
-sealed class MoveResult{
+sealed class MoveResult {
     data class MoveSuccess(val updatedBoard: KanbanBoard) : MoveResult()
     data object MoveFailed : MoveResult()
 }
 
-sealed class CanDeleteResult{
+sealed class CanDeleteResult {
     data class DeleteSuccess(val updatedBoard: KanbanBoard) : CanDeleteResult()
     data object DeleteFailed : CanDeleteResult()
 }

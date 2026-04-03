@@ -31,13 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun KanbanBoardHeader(
-    projectName: String,
-    completionText: String,
-    progress: Float,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+fun KanbanBoardHeader(projectName: String, completionText: String, progress: Float, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxWidth()

@@ -53,7 +53,7 @@ fun TaskDialogContent(
     onAssigneeChanged: (Int) -> Unit,
     onDismissClick: () -> Unit,
     modifier: Modifier = Modifier,
-    content: @Composable RowScope. () -> Unit,
+    content: @Composable RowScope.() -> Unit,
 ) {
     val isTagError = isTagCountError || isTagFormatError
     val tagErrorMessage = when {
@@ -187,7 +187,6 @@ fun TaskDialogContent(
             Spacer(Modifier.width(12.dp))
 
             content()
-
         }
     }
 }
