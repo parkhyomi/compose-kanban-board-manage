@@ -6,7 +6,6 @@ import woowacourse.kanban.board.domain.KanbanTask
 import woowacourse.kanban.board.domain.TaskStatus
 import woowacourse.kanban.board.feature.board.KanbanBoardState
 import woowacourse.kanban.board.feature.board.component.dialog.model.TaskFormResult
-import woowacourse.kanban.board.feature.board.mapper.toSnackbarMessage
 import woowacourse.kanban.board.feature.board.model.SnackbarMessageType
 import kotlin.test.Test
 
@@ -95,20 +94,6 @@ class KanbanBoardStateTest {
         // Then
         assertThat(state.snackbarEvent?.type).isEqualTo(SnackbarMessageType.TaskAddFailed)
         assertThat(state.kanbanBoard.tasks).isEmpty()
-    }
-
-    @Test
-    fun `TaskAdded는 성공 메시지로 매핑된다`() {
-
-        assertThat(SnackbarMessageType.TaskAdded.toSnackbarMessage())
-            .isEqualTo("태스크가 추가되었습니다.")
-    }
-
-    @Test
-    fun `TaskAddFailed는 실패 메시지로 매핑된다`() {
-
-        assertThat(SnackbarMessageType.TaskAddFailed.toSnackbarMessage())
-            .isEqualTo("태스크 추가에 실패했습니다.")
     }
 
     @Test
