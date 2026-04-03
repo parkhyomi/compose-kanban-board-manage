@@ -69,8 +69,8 @@ class KanbanBoardScreenTest {
 
     @Test
     fun `상태 객체의 addTask를 호출하면 화면이 리컴포지션되어 새로운 태스크와 완료율이 갱신된다`() = runComposeUiTest {
-        // Given
         val state = KanbanBoardState()
+
         setContent {
             KanbanBoardScreen(
                 boardState = state,
@@ -80,17 +80,20 @@ class KanbanBoardScreenTest {
 
         onNodeWithText("완료율: 0% (0/0)").assertIsDisplayed()
 
-        // When
-        val newTaskResult = TaskFormResult(
-            title = "새로운 완료 작업",
-            description = "테스트용입니다",
+        val result = TaskFormResult(
+            title = "새로운 태스크",
+            description = "태스크 설명",
             tags = emptyList(),
             status = TaskStatus.DONE,
-            assignee = "페임스",
+            assignee = "다이노",
         )
-        state.addTask(newTaskResult)
 
-        // Then
+        state.showTaskDialog()
+        state.addTask(result)
+        state.hideCardDialog()
+
+        waitForIdle()
+
         onNodeWithText("완료율: 100% (1/1)").assertIsDisplayed()
     }
 }
