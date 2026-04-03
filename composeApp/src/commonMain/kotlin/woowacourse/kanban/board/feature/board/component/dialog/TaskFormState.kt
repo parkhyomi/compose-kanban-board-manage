@@ -9,17 +9,21 @@ import woowacourse.kanban.board.domain.KanbanTask
 import woowacourse.kanban.board.domain.Tag
 import woowacourse.kanban.board.domain.TaskStatus
 
-class TaskFormState {
-    var title by mutableStateOf("")
+class TaskFormState(
+    initialTitle: String = "",
+    initialDescription: String = "",
+    initialTagValue: String = "",
+) {
+    var title by mutableStateOf(initialTitle)
         private set
 
     var isTitleDirty by mutableStateOf(false)
         private set
 
-    var description by mutableStateOf("")
+    var description by mutableStateOf(initialDescription)
         private set
 
-    var tagValue by mutableStateOf("")
+    var tagValue by mutableStateOf(initialTagValue)
         private set
 
     val isTitleError: Boolean
@@ -75,4 +79,12 @@ class TaskFormState {
 }
 
 @Composable
-fun rememberTaskFormState(): TaskFormState = remember { TaskFormState() }
+fun rememberTaskFormState(initialTask: KanbanTask? = null): TaskFormState {
+    return remember(initialTask?.id) {
+        TaskFormState(
+            initialTitle = initialTask?.title.orEmpty(),
+            initialDescription = initialTask?.description.orEmpty(),
+            initialTagValue = initialTask?.tags?.joinToString(", ") { it.value }.orEmpty(),
+        )
+    }
+}

@@ -56,6 +56,7 @@ fun KanbanColumn(
     onTaskDragChange: (Offset) -> Unit = {},
     onTaskDragEnd: () -> Unit = {},
     onTaskDragCancel: () -> Unit = {},
+    onCardClick: (KanbanTask) -> Unit = {},
 ) {
 
     val (headerBackgroundColor, contentBackgroundColor) = status.colors
@@ -125,6 +126,7 @@ fun KanbanColumn(
                     onDragChange = onTaskDragChange,
                     onDragEnd = onTaskDragEnd,
                     onDragCancel = onTaskDragCancel,
+                    onCardClick = { onCardClick(item) },
                 )
             }
         }

@@ -30,6 +30,7 @@ fun KanbanBoardContent(
     kanbanBoard: KanbanBoard,
     onTaskCreateClick: () -> Unit,
     onMoveTask: (KanbanTask, TaskStatus) -> Unit,
+    onCardClick: (KanbanTask) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     var draggedTask by remember { mutableStateOf<KanbanTask?>(null) }
@@ -81,6 +82,7 @@ fun KanbanBoardContent(
                         draggedTask = null
                         currentDragPosition = null
                     },
+                    onCardClick = onCardClick,
                 )
             }
         }
