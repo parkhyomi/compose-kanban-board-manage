@@ -2,6 +2,7 @@ package woowacourse.kanban.board.feature.board.component.card
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -48,12 +49,14 @@ fun KanbanCard(
     onDragChange: (Offset) -> Unit = {},
     onDragEnd: () -> Unit = {},
     onDragCancel: () -> Unit = {},
+    onCardClick: () -> Unit = {},
 ) {
     var cardWindowPosition by remember { mutableStateOf(Offset.Zero) }
 
     Column(
         modifier = modifier
             .width(286.dp)
+            .clickable( onClick = onCardClick)
             .onGloballyPositioned { cardWindowPosition = it.positionInWindow() }
             .pointerInput(Unit) {
                 detectDragGestures(
