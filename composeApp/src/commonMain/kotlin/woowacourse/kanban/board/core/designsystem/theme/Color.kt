@@ -22,3 +22,6 @@ val Color.Companion.KanbanPurple: Color
 
 val Color.Companion.KanbanLightPurple: Color
     get() = Color(0xffEDE9FE)
+
+val Color.Companion.KanbanRed: Color
+    get() = Color(0xffDB6365)
