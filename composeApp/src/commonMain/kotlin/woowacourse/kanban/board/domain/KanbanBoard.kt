@@ -7,9 +7,20 @@ data class KanbanBoard(val tasks: List<KanbanTask> = emptyList()) {
 
     fun getCountByStatus(status: TaskStatus): Int = tasks.count { it.status == status }
 
-    fun addTask(task: KanbanTask): KanbanBoard {
-        val updatedBoard = copy(tasks = tasks + task)
-        return updatedBoard
+    fun addTask(task: TaskFormResult): AddResult {
+        val task = runCatching {
+            KanbanTask(
+                title = task.title,
+                description = task.description,
+                tags = task.tags,
+                status = task.status,
+                crewName = task.assignee,
+            )
+        }.getOrElse {
+            return AddResult.AddFailed
+        }
+
+        return AddResult.AddSuccess(copy(tasks = tasks + task))
     }
 
     fun moveTask(taskId: UUID, targetStatus: TaskStatus): MoveResult {
@@ -23,6 +34,30 @@ data class KanbanBoard(val tasks: List<KanbanTask> = emptyList()) {
             },
         )
         return MoveResult.MoveSuccess(updatedBoard)
+    }
+
+    fun updateTask(taskId: UUID, task: TaskFormResult): UpdateResult {
+        val currentTask = tasks.find { it.id == taskId } ?: return UpdateResult.UpdateFailed
+
+        val updatedTask = runCatching {
+            currentTask.copy(
+                title = task.title,
+                description = task.description,
+                tags = task.tags,
+                status = task.status,
+                crewName = task.assignee,
+            )
+        }.getOrElse {
+            return UpdateResult.UpdateFailed
+        }
+
+        return UpdateResult.UpdateSuccess(
+            copy(
+                tasks = tasks.map { task ->
+                    if (task.id == taskId) updatedTask else task
+                },
+            ),
+        )
     }
 
     private fun canMove(form: TaskStatus, move: TaskStatus): Boolean = when (form) {
@@ -54,6 +89,16 @@ data class KanbanBoard(val tasks: List<KanbanTask> = emptyList()) {
 sealed class MoveResult {
     data class MoveSuccess(val updatedBoard: KanbanBoard) : MoveResult()
     data object MoveFailed : MoveResult()
+}
+
+sealed class AddResult {
+    data class AddSuccess(val updatedBoard: KanbanBoard) : AddResult()
+    data object AddFailed : AddResult()
+}
+
+sealed class UpdateResult {
+    data class UpdateSuccess(val updatedBoard: KanbanBoard) : UpdateResult()
+    data object UpdateFailed : UpdateResult()
 }
 
 sealed class CanDeleteResult {

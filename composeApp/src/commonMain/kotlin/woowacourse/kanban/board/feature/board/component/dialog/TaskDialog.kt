@@ -11,7 +11,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import woowacourse.kanban.board.domain.TaskStatus
 import woowacourse.kanban.board.feature.board.component.dialog.component.TaskDialogButton
-import woowacourse.kanban.board.feature.board.component.dialog.model.TaskFormResult
+import woowacourse.kanban.board.domain.TaskFormResult
 
 @Composable
 fun TaskDialog(onCreateClick: (result: TaskFormResult) -> Unit, onDismissClick: () -> Unit, modifier: Modifier = Modifier) {

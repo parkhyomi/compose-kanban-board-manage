@@ -17,25 +17,25 @@ import woowacourse.kanban.board.core.designsystem.theme.KanbanRed
 import woowacourse.kanban.board.domain.KanbanTask
 import woowacourse.kanban.board.domain.TaskStatus
 import woowacourse.kanban.board.feature.board.component.dialog.component.TaskDialogButton
-import woowacourse.kanban.board.feature.board.component.dialog.model.TaskFormResult
+import woowacourse.kanban.board.domain.TaskFormResult
 
 @Composable
 fun CardDialog(
     onDismissClick: () -> Unit,
     onDeletedClick: (task: KanbanTask) -> Unit,
     onUpdatedClick: (taskId: UUID, result: TaskFormResult) -> Unit,
-    initialTask: KanbanTask? = null,
+    initialTask: KanbanTask,
     modifier: Modifier = Modifier,
 ) {
-    val task = requireNotNull(initialTask) { "CardDialog requires a non-null initialTask." }
-    val formState = rememberTaskFormState(task)
-    val initialStatusIndex = TaskStatus.entries.indexOf(task.status).takeIf { it >= 0 } ?: 0
 
-    var selectedStatusIndex by remember(task.id) { mutableIntStateOf(initialStatusIndex) }
+    val formState = rememberTaskFormState(initialTask)
+    val initialStatusIndex = TaskStatus.entries.indexOf(initialTask.status).takeIf { it >= 0 } ?: 0
+
+    var selectedStatusIndex by remember(initialTask.id) { mutableIntStateOf(initialStatusIndex) }
     val assignees = formState.assigneeResult(TaskStatus.entries[selectedStatusIndex])
-    var selectedAssigneeIndex by remember(task.id) {
+    var selectedAssigneeIndex by remember(initialTask.id) {
         mutableIntStateOf(
-            task.crewName.let { assignees.indexOf(it) }.takeIf { it >= 0 } ?: 0,
+            initialTask.crewName.let { assignees.indexOf(it) }.takeIf { it >= 0 } ?: 0,
         )
     }
 
@@ -75,7 +75,7 @@ fun CardDialog(
             TaskDialogButton(
                 text = "삭제",
                 onClick = {
-                    onDeletedClick(task)
+                    onDeletedClick(initialTask)
                 },
                 contentColor = Color.White,
                 containerColor = Color.KanbanRed,
@@ -85,7 +85,7 @@ fun CardDialog(
                 text = "수정",
                 onClick = {
                     onUpdatedClick(
-                        task.id,
+                        initialTask.id,
                         TaskFormResult(
                             title = formState.title,
                             description = formState.description.takeIf { it.isNotBlank() },

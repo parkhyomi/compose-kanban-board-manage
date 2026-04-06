@@ -7,12 +7,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import java.util.UUID
+import woowacourse.kanban.board.domain.AddResult
 import woowacourse.kanban.board.domain.CanDeleteResult
 import woowacourse.kanban.board.domain.KanbanBoard
 import woowacourse.kanban.board.domain.KanbanTask
 import woowacourse.kanban.board.domain.MoveResult
+import woowacourse.kanban.board.domain.TaskFormResult
 import woowacourse.kanban.board.domain.TaskStatus
-import woowacourse.kanban.board.feature.board.component.dialog.model.TaskFormResult
+import woowacourse.kanban.board.domain.UpdateResult
 import woowacourse.kanban.board.feature.board.model.SnackbarEvent
 import woowacourse.kanban.board.feature.board.model.SnackbarMessageType
 
@@ -80,20 +82,16 @@ class KanbanBoardState(initialBoard: KanbanBoard = KanbanBoard()) {
     }
 
     fun addTask(result: TaskFormResult) {
-        runCatching {
-            val newTask = KanbanTask(
-                title = result.title,
-                description = result.description,
-                tags = result.tags,
-                status = result.status,
-                crewName = result.assignee,
-            )
-            kanbanBoard = kanbanBoard.addTask(newTask)
-            hideTaskDialog()
-        }.onSuccess {
-            emitSnackbar(SnackbarMessageType.TaskAdded)
-        }.onFailure { e ->
-            emitSnackbar(SnackbarMessageType.TaskAddFailed)
+        when (val addResult = kanbanBoard.addTask(result)) {
+            is AddResult.AddSuccess -> {
+                kanbanBoard = addResult.updatedBoard
+                hideTaskDialog()
+                emitSnackbar(SnackbarMessageType.TaskAdded)
+            }
+
+            is AddResult.AddFailed -> {
+                emitSnackbar(SnackbarMessageType.TaskAddFailed)
+            }
         }
     }
 
@@ -112,24 +110,17 @@ class KanbanBoardState(initialBoard: KanbanBoard = KanbanBoard()) {
     }
 
     fun updateTask(taskId: UUID, result: TaskFormResult) {
-        runCatching {
-            val updatedTask = kanbanBoard.tasks.first { it.id == taskId }.copy(
-                title = result.title,
-                description = result.description,
-                tags = result.tags,
-                status = result.status,
-                crewName = result.assignee,
-            )
-            kanbanBoard = kanbanBoard.copy(
-                tasks = kanbanBoard.tasks.map { task ->
-                    if (task.id == taskId) updatedTask else task
-                },
-            )
-            hideCardDialog()
-        }.onSuccess {
-            emitSnackbar(SnackbarMessageType.TaskUpdated)
-        }.onFailure {
-            emitSnackbar(SnackbarMessageType.TaskUpdateFailed)
+        when (val updateResult = kanbanBoard.updateTask(taskId, result)) {
+            is UpdateResult.UpdateSuccess -> {
+                kanbanBoard = updateResult.updatedBoard
+                hideCardDialog()
+                emitSnackbar(SnackbarMessageType.TaskUpdated)
+            }
+
+            is UpdateResult.UpdateFailed -> {
+                hideCardDialog()
+                emitSnackbar(SnackbarMessageType.TaskUpdateFailed)
+            }
         }
     }
 }
