@@ -15,9 +15,10 @@ import androidx.compose.ui.window.DialogProperties
 import java.util.UUID
 import woowacourse.kanban.board.core.designsystem.theme.KanbanRed
 import woowacourse.kanban.board.domain.KanbanTask
-import woowacourse.kanban.board.domain.TaskStatus
-import woowacourse.kanban.board.feature.board.component.dialog.component.TaskDialogButton
 import woowacourse.kanban.board.domain.TaskFormResult
+import woowacourse.kanban.board.domain.TaskStatus
+import woowacourse.kanban.board.domain.TaskStatusRules
+import woowacourse.kanban.board.feature.board.component.dialog.component.TaskDialogButton
 
 @Composable
 fun CardDialog(
@@ -32,7 +33,7 @@ fun CardDialog(
     val initialStatusIndex = TaskStatus.entries.indexOf(initialTask.status).takeIf { it >= 0 } ?: 0
 
     var selectedStatusIndex by remember(initialTask.id) { mutableIntStateOf(initialStatusIndex) }
-    val assignees = formState.assigneeResult(TaskStatus.entries[selectedStatusIndex])
+    val assignees = TaskStatusRules.availableAssignees(TaskStatus.entries[selectedStatusIndex])
     var selectedAssigneeIndex by remember(initialTask.id) {
         mutableIntStateOf(
             initialTask.crewName.let { assignees.indexOf(it) }.takeIf { it >= 0 } ?: 0,

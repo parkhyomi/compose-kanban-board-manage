@@ -9,9 +9,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import woowacourse.kanban.board.domain.TaskStatus
-import woowacourse.kanban.board.feature.board.component.dialog.component.TaskDialogButton
 import woowacourse.kanban.board.domain.TaskFormResult
+import woowacourse.kanban.board.domain.TaskStatus
+import woowacourse.kanban.board.domain.TaskStatusRules
+import woowacourse.kanban.board.feature.board.component.dialog.component.TaskDialogButton
 
 @Composable
 fun TaskDialog(onCreateClick: (result: TaskFormResult) -> Unit, onDismissClick: () -> Unit, modifier: Modifier = Modifier) {
@@ -19,6 +20,8 @@ fun TaskDialog(onCreateClick: (result: TaskFormResult) -> Unit, onDismissClick: 
 
     var selectedStatusIndex by remember { mutableIntStateOf(0) }
     var selectedAssigneeIndex by remember { mutableIntStateOf(0) }
+    val selectedStatus = TaskStatus.entries[selectedStatusIndex]
+    val assignees = TaskStatusRules.availableAssignees(selectedStatus)
 
     Dialog(
         onDismissRequest = onDismissClick,
@@ -48,7 +51,7 @@ fun TaskDialog(onCreateClick: (result: TaskFormResult) -> Unit, onDismissClick: 
                 selectedStatusIndex = it
                 selectedAssigneeIndex = 0
             },
-            assignees = formState.assigneeResult(TaskStatus.entries[selectedStatusIndex]),
+            assignees = assignees,
             selectedAssigneeIndex = selectedAssigneeIndex,
             onAssigneeChanged = { selectedAssigneeIndex = it },
             onDismissClick = onDismissClick,
@@ -61,8 +64,8 @@ fun TaskDialog(onCreateClick: (result: TaskFormResult) -> Unit, onDismissClick: 
                             title = formState.title,
                             description = formState.description.takeIf { it.isNotBlank() },
                             tags = formState.tags,
-                            status = TaskStatus.entries[selectedStatusIndex],
-                            assignee = formState.assigneeResult(TaskStatus.entries[selectedStatusIndex])[selectedAssigneeIndex],
+                            status = selectedStatus,
+                            assignee = assignees[selectedAssigneeIndex],
                         ),
                     )
                 },

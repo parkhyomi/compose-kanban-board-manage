@@ -25,9 +25,14 @@ data class KanbanBoard(val tasks: List<KanbanTask> = emptyList()) {
 
     fun moveTask(taskId: UUID, targetStatus: TaskStatus): MoveResult {
         val currentTask = tasks.find { it.id == taskId } ?: return MoveResult.MoveFailed
-        if (!canMove(currentTask.status, targetStatus)) {
+        if (!TaskStatusRules.canMove(currentTask.status, targetStatus)) {
             return MoveResult.MoveFailed
         }
+
+        if (!TaskStatusRules.isAssigneeAllowed(targetStatus, currentTask.crewName)) {
+            return MoveResult.MoveFailed
+        }
+
         val updatedBoard = copy(
             tasks = tasks.map { task ->
                 if (task.id == taskId) task.copy(status = targetStatus) else task
@@ -58,13 +63,6 @@ data class KanbanBoard(val tasks: List<KanbanTask> = emptyList()) {
                 },
             ),
         )
-    }
-
-    private fun canMove(form: TaskStatus, move: TaskStatus): Boolean = when (form) {
-        TaskStatus.TODO -> move == TaskStatus.IN_PROGRESS
-        TaskStatus.IN_PROGRESS -> move == TaskStatus.TODO || move == TaskStatus.REVIEW
-        TaskStatus.REVIEW -> move == TaskStatus.IN_PROGRESS || move == TaskStatus.DONE
-        TaskStatus.DONE -> move == TaskStatus.TODO
     }
 
     fun canDelete(task: KanbanTask): CanDeleteResult {

@@ -96,6 +96,19 @@ class KanbanBoardTest {
     }
 
     @Test
+    fun `담당자가 없음인 태스크는 TODO에서 IN_PROGRESS로 이동할 수 없다`() {
+        // given
+        val task = createTask(status = TaskStatus.TODO, crewName = TaskStatusRules.UNASSIGNED)
+        val board = KanbanBoard(listOf(task))
+
+        // when
+        val result = board.moveTask(task.id, TaskStatus.IN_PROGRESS)
+
+        // then
+        assertThat(result).isEqualTo(MoveResult.MoveFailed)
+    }
+
+    @Test
     fun `상태별_태스크_개수를_정확히_반환한다`() {
         // given
         val todoTask1 = createTask(status = TaskStatus.TODO)

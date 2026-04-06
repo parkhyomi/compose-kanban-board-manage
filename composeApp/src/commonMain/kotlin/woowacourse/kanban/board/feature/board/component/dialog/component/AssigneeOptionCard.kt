@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import woowacourse.kanban.board.domain.TaskStatusRules
 
 @Composable
 fun AssigneeOptionCard(name: String, isSelected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
@@ -32,7 +33,7 @@ fun AssigneeOptionCard(name: String, isSelected: Boolean, onClick: () -> Unit, m
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            if (name != "없음") {
+            if (name != TaskStatusRules.UNASSIGNED) {
                 Icon(
                     imageVector = Icons.Default.AccountCircle,
                     contentDescription = "기본 이미지",
