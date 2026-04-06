@@ -51,7 +51,6 @@ fun KanbanBoardContent(
             completionText = "완료율: ${(completionRate * 100).toInt()}% ($completeCount/$totalCount)",
             progress = completionRate,
             onClick = onTaskCreateClick,
-            modifier = Modifier,
         )
 
         Row(
