@@ -32,7 +32,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.jetbrains.compose.resources.DrawableResource
 import woowacourse.kanban.board.domain.KanbanTask
 import woowacourse.kanban.board.domain.Tag
 import woowacourse.kanban.board.domain.TaskStatus
@@ -44,7 +43,6 @@ fun KanbanCard(
     modifier: Modifier = Modifier,
     tags: List<Tag> = emptyList(),
     description: String? = null,
-    crewImage: DrawableResource? = null,
     onDragStart: () -> Unit = {},
     onDragChange: (Offset) -> Unit = {},
     onDragEnd: () -> Unit = {},
@@ -98,16 +96,9 @@ fun KanbanCard(
 
         HorizontalDivider(thickness = Dp.Hairline, color = Color.LightGray)
 
-        if (crewImage != null) {
-            KanbanCardProfile(
-                crewName = crewName,
-                crewImage = crewImage,
-            )
-        } else {
-            KanbanCardProfile(
-                crewName = crewName,
-            )
-        }
+        KanbanCardProfile(
+            crewName = crewName,
+        )
     }
 }
 
@@ -178,6 +169,7 @@ private fun KanbanCardPreview_Optional() {
             crewName = commonCrewName,
             status = TaskStatus.TODO,
         )
+
         KanbanCard(
             title = minimalTask.title,
             crewName = minimalTask.crewName,
