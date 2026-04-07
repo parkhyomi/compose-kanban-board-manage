@@ -2,7 +2,12 @@ package woowacourse.kanban.board.domain
 
 import java.util.UUID
 
-data class KanbanBoard(val tasks: List<KanbanTask> = emptyList()) {
+data class KanbanBoard(
+    private val tasks: List<KanbanTask> = emptyList()
+) {
+    val getTaskCountByTotal: Int
+        get() = tasks.size
+
     fun getTasksByStatus(status: TaskStatus): List<KanbanTask> = tasks.filter { it.status == status }
 
     fun getCountByStatus(status: TaskStatus): Int = tasks.count { it.status == status }

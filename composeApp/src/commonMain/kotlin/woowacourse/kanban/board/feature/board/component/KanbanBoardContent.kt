@@ -30,7 +30,7 @@ fun KanbanBoardContent(
     kanbanBoard: KanbanBoard,
     onTaskCreateClick: () -> Unit,
     onMoveTask: (KanbanTask, TaskStatus) -> Unit,
-    onCardClick: (KanbanTask) -> Unit = {},
+    onCardClick: (KanbanTask) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var draggedTask by remember { mutableStateOf<KanbanTask?>(null) }
@@ -39,7 +39,7 @@ fun KanbanBoardContent(
 
     val completionRate = kanbanBoard.completionRate
     val completeCount = kanbanBoard.getCountByStatus(TaskStatus.DONE)
-    val totalCount = kanbanBoard.tasks.size
+    val totalCount = kanbanBoard.getTaskCountByTotal
 
     Column(
         modifier = modifier
@@ -101,5 +101,6 @@ private fun KanbanBoardScreenPreview() {
         kanbanBoard = KanbanBoard(emptyList()),
         onTaskCreateClick = {},
         onMoveTask = { _, _ -> },
+        onCardClick = {},
     )
 }
