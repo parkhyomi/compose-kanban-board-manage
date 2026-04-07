@@ -61,8 +61,8 @@ class KanbanBoardTest {
         // then
         assertThat(result).isInstanceOf(MoveResult.MoveSuccess::class.java)
         val updatedBoard = (result as MoveResult.MoveSuccess).updatedBoard
-        assertThat(updatedBoard.tasks.first().status).isEqualTo(TaskStatus.IN_PROGRESS)
-        assertThat(updatedBoard.tasks.first().id).isEqualTo(task.id)
+        assertThat(updatedBoard.allTasks().first().status).isEqualTo(TaskStatus.IN_PROGRESS)
+        assertThat(updatedBoard.allTasks().first().id).isEqualTo(task.id)
     }
 
     @Test
@@ -78,7 +78,7 @@ class KanbanBoardTest {
         assertThat(result).isInstanceOf(MoveResult.MoveSuccess::class.java)
         val updatedBoard = (result as MoveResult.MoveSuccess).updatedBoard
         assertThat(updatedBoard).isNotSameAs(board)
-        assertThat(board.tasks.first().status).isEqualTo(TaskStatus.TODO)
+        assertThat(board.allTasks().first().status).isEqualTo(TaskStatus.TODO)
     }
 
     @Test
@@ -129,4 +129,8 @@ class KanbanBoardTest {
             crewName = crewName,
         )
     }
+}
+
+private fun KanbanBoard.allTasks(): List<KanbanTask> = TaskStatus.entries.flatMap { status ->
+    getTasksByStatus(status)
 }
