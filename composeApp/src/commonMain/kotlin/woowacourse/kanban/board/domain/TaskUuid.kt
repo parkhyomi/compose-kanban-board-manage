@@ -4,6 +4,6 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
-object TaskUuid{
+object TaskUuid {
     fun uuid(): String = Uuid.random().toString()
 }

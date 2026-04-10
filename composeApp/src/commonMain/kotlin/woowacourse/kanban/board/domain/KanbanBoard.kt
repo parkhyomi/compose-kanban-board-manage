@@ -1,8 +1,6 @@
 package woowacourse.kanban.board.domain
 
-data class KanbanBoard(
-    private val tasks: List<KanbanTask> = emptyList()
-) {
+data class KanbanBoard(private val tasks: List<KanbanTask> = emptyList()) {
     val getTaskCountByTotal: Int
         get() = tasks.size
 

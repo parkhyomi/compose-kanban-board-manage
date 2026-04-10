@@ -4,9 +4,9 @@ import kotlin.test.Test
 import org.assertj.core.api.Assertions.assertThat
 import woowacourse.kanban.board.domain.KanbanBoard
 import woowacourse.kanban.board.domain.KanbanTask
+import woowacourse.kanban.board.domain.TaskFormResult
 import woowacourse.kanban.board.domain.TaskStatus
 import woowacourse.kanban.board.feature.board.KanbanBoardState
-import woowacourse.kanban.board.domain.TaskFormResult
 import woowacourse.kanban.board.feature.board.model.SnackbarMessageType
 
 class KanbanBoardStateTest {
