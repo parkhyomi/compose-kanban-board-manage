@@ -8,10 +8,10 @@ import androidx.compose.ui.test.runComposeUiTest
 import kotlin.test.Test
 import woowacourse.kanban.board.domain.KanbanBoard
 import woowacourse.kanban.board.domain.KanbanTask
+import woowacourse.kanban.board.domain.TaskFormResult
 import woowacourse.kanban.board.domain.TaskStatus
 import woowacourse.kanban.board.feature.board.KanbanBoardScreen
 import woowacourse.kanban.board.feature.board.KanbanBoardState
-import woowacourse.kanban.board.domain.TaskFormResult
 
 @OptIn(ExperimentalTestApi::class)
 class KanbanBoardScreenTest {
@@ -90,7 +90,6 @@ class KanbanBoardScreenTest {
 
         state.showTaskDialog()
         state.addTask(result)
-        state.hideCardDialog()
 
         waitForIdle()
 

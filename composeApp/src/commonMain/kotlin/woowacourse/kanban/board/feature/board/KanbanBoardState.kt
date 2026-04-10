@@ -89,6 +89,7 @@ class KanbanBoardState(initialBoard: KanbanBoard = KanbanBoard()) {
             }
 
             is AddResult.AddFailed -> {
+                hideTaskDialog()
                 emitSnackbar(SnackbarMessageType.TaskAddFailed)
             }
         }
