@@ -1,7 +1,5 @@
 package woowacourse.kanban.board.domain
 
-import java.util.UUID
-
 data class KanbanBoard(
     private val tasks: List<KanbanTask> = emptyList()
 ) {
@@ -28,7 +26,7 @@ data class KanbanBoard(
         return AddResult.AddSuccess(copy(tasks = tasks + task))
     }
 
-    fun moveTask(taskId: UUID, targetStatus: TaskStatus): MoveResult {
+    fun moveTask(taskId: String, targetStatus: TaskStatus): MoveResult {
         val currentTask = tasks.find { it.id == taskId } ?: return MoveResult.MoveFailed
         if (!TaskStatusRules.canMove(currentTask.status, targetStatus)) {
             return MoveResult.MoveFailed
@@ -46,7 +44,7 @@ data class KanbanBoard(
         return MoveResult.MoveSuccess(updatedBoard)
     }
 
-    fun updateTask(taskId: UUID, task: TaskFormResult): UpdateResult {
+    fun updateTask(taskId: String, task: TaskFormResult): UpdateResult {
         val currentTask = tasks.find { it.id == taskId } ?: return UpdateResult.UpdateFailed
 
         val updatedTask = runCatching {

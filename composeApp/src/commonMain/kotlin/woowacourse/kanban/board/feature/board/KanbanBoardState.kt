@@ -6,7 +6,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import java.util.UUID
 import woowacourse.kanban.board.domain.AddResult
 import woowacourse.kanban.board.domain.CanDeleteResult
 import woowacourse.kanban.board.domain.KanbanBoard
@@ -109,7 +108,7 @@ class KanbanBoardState(initialBoard: KanbanBoard = KanbanBoard()) {
         }
     }
 
-    fun updateTask(taskId: UUID, result: TaskFormResult) {
+    fun updateTask(taskId: String, result: TaskFormResult) {
         when (val updateResult = kanbanBoard.updateTask(taskId, result)) {
             is UpdateResult.UpdateSuccess -> {
                 kanbanBoard = updateResult.updatedBoard

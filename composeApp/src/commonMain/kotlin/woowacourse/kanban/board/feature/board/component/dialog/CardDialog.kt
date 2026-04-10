@@ -12,7 +12,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import java.util.UUID
 import woowacourse.kanban.board.core.designsystem.theme.KanbanRed
 import woowacourse.kanban.board.domain.KanbanTask
 import woowacourse.kanban.board.domain.TaskFormResult
@@ -24,7 +23,7 @@ import woowacourse.kanban.board.feature.board.component.dialog.component.TaskDia
 fun CardDialog(
     onDismissClick: () -> Unit,
     onDeletedClick: (task: KanbanTask) -> Unit,
-    onUpdatedClick: (taskId: UUID, result: TaskFormResult) -> Unit,
+    onUpdatedClick: (taskId: String, result: TaskFormResult) -> Unit,
     initialTask: KanbanTask,
     modifier: Modifier = Modifier,
 ) {

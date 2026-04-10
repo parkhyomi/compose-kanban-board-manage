@@ -1,9 +1,7 @@
 package woowacourse.kanban.board.domain
 
-import java.util.UUID
-
 data class KanbanTask(
-    val id: UUID = UUID.randomUUID(),
+    val id: String = TaskUuid.uuid(),
     val title: String,
     val description: String? = null,
     val tags: List<Tag> = emptyList(),
